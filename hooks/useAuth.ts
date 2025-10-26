@@ -1,10 +1,34 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import type { User } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
-// Pre-seed with a demo user
+// --- Helper Functions for managing the user database in localStorage ---
+
+// A more robust way to get all registered users.
+const getUsersDatabase = (): Record<string, any> => {
+    try {
+        const usersJson = localStorage.getItem('users');
+        return usersJson ? JSON.parse(usersJson) : {};
+    } catch (error) {
+        console.error("Failed to parse users database from localStorage", error);
+        return {}; // Return empty object on error to prevent crashes
+    }
+};
+
+// A dedicated function to save the entire user database.
+const saveUsersDatabase = (users: Record<string, any>) => {
+    try {
+        localStorage.setItem('users', JSON.stringify(users));
+    } catch (error) {
+        console.error("Failed to save users database to localStorage", error);
+    }
+};
+
+
+// --- Initial Seeding for Demo User ---
+
 const seedDemoUser = () => {
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    const users = getUsersDatabase();
     if (!users['demo@example.com']) {
         users['demo@example.com'] = {
             id: 'user-1',
@@ -18,15 +42,17 @@ const seedDemoUser = () => {
             gstNumber: '27ABCDE1234F1Z5',
             taxRate: 5, // 5%
         };
-        localStorage.setItem('users', JSON.stringify(users));
+        saveUsersDatabase(users);
     }
 };
 seedDemoUser();
 
 
+// --- Auth Context and Provider ---
+
 interface AuthContextType {
   currentUser: User | null;
-  login: (email: string, pass: string) => { success: boolean; error?: string };
+  login: (email: string, pass: string, rememberMe: boolean) => { success: boolean; error?: string };
   logout: () => void;
   signup: (details: Omit<User, 'id'> & {password: string}) => { success: boolean; error?: string };
   updateUser: (details: Partial<User>) => void;
@@ -36,16 +62,21 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    // This logic correctly prioritizes a long-term session over a temporary one.
     try {
-      const userJson = localStorage.getItem('currentUser');
-      return userJson ? JSON.parse(userJson) : null;
+      const rememberedUserJson = localStorage.getItem('currentUser');
+      if (rememberedUserJson) return JSON.parse(rememberedUserJson);
+      
+      const sessionUserJson = sessionStorage.getItem('currentUser');
+      return sessionUserJson ? JSON.parse(sessionUserJson) : null;
     } catch (error) {
+      console.error("Failed to load current user from storage", error);
       return null;
     }
   });
 
-  const login = (email: string, pass: string) => {
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
+  const login = (email: string, pass: string, rememberMe: boolean) => {
+    const users = getUsersDatabase();
     const userData = users[email];
 
     if (userData && userData.password === pass) {
@@ -60,7 +91,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         gstNumber: userData.gstNumber,
         taxRate: userData.taxRate,
       };
-      localStorage.setItem('currentUser', JSON.stringify(user));
+
+      // Clear any previous session to prevent conflicts.
+      localStorage.removeItem('currentUser');
+      sessionStorage.removeItem('currentUser');
+
+      // Persist session based on "Remember Me" choice.
+      if (rememberMe) {
+        localStorage.setItem('currentUser', JSON.stringify(user));
+      } else {
+        sessionStorage.setItem('currentUser', JSON.stringify(user));
+      }
+      
       setCurrentUser(user);
       return { success: true };
     }
@@ -68,15 +110,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const signup = (details: Omit<User, 'id'> & {password: string}) => {
-    const users = JSON.parse(localStorage.getItem('users') || '{}');
+    const users = getUsersDatabase();
+    // Robust check for existing users.
     if (users[details.email]) {
-        return { success: false, error: 'An account with this email already exists.' };
+        return { success: false, error: 'This email is already registered. Please log in instead.' };
     }
+    
     const newUserId = uuidv4();
     const newUserForDb = {
         id: newUserId,
         email: details.email,
-        password: details.password, // Again, don't store plain text passwords in real apps!
+        password: details.password, // In a real app, this MUST be hashed!
         name: details.name,
         shopName: details.shopName,
         shopLogo: details.shopLogo,
@@ -86,9 +130,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         taxRate: details.taxRate,
     };
     users[details.email] = newUserForDb;
-    localStorage.setItem('users', JSON.stringify(users));
+    saveUsersDatabase(users);
 
-    // Automatically log in the new user
+    // Automatically log in the new user (session only for new signups)
     const userForState: User = {
       id: newUserId,
       email: details.email,
@@ -100,37 +144,47 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       gstNumber: details.gstNumber,
       taxRate: details.taxRate,
     };
-    localStorage.setItem('currentUser', JSON.stringify(userForState));
+    sessionStorage.setItem('currentUser', JSON.stringify(userForState));
     setCurrentUser(userForState);
 
     return { success: true };
   };
 
-  const logout = () => {
+  const logout = useCallback(() => {
+    // Ensure logout clears both session types and state.
     localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
     setCurrentUser(null);
-  };
+  }, []);
   
   const updateUser = (details: Partial<User>) => {
-    if (currentUser) {
-        const updatedUser = { ...currentUser, ...details };
-        setCurrentUser(updatedUser);
+    if (!currentUser) return;
+
+    const updatedUser = { ...currentUser, ...details };
+    setCurrentUser(updatedUser);
+
+    // Persist the updated user session to the correct storage.
+    if (localStorage.getItem('currentUser')) {
         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    } else {
+        sessionStorage.setItem('currentUser', JSON.stringify(updatedUser));
+    }
 
-        const users = JSON.parse(localStorage.getItem('users') || '{}');
-        if(users[currentUser.email]) {
-            // Ensure password isn't overwritten if not provided in details
-            const password = users[currentUser.email].password;
-            const updatedDetails = { ...users[currentUser.email], ...details, password };
+    // Also update the master user record in the main database.
+    const users = getUsersDatabase();
+    const userRecord = users[currentUser.email];
+    if(userRecord) {
+        // Ensure password isn't overwritten if not provided in details
+        const password = userRecord.password;
+        const updatedDetails = { ...userRecord, ...details, password };
 
-            // Handle logo removal
-            if ('shopLogo' in details && details.shopLogo === undefined) {
-                delete updatedDetails.shopLogo;
-            }
-
-            users[currentUser.email] = updatedDetails;
-            localStorage.setItem('users', JSON.stringify(users));
+        // Handle logo removal
+        if ('shopLogo' in details && details.shopLogo === undefined) {
+            delete updatedDetails.shopLogo;
         }
+
+        users[currentUser.email] = updatedDetails;
+        saveUsersDatabase(users);
     }
   };
 

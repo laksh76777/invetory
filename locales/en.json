@@ -12,7 +12,8 @@
         "password_placeholder": "Password",
         "login_button": "Login",
         "no_account": "Don't have an account?",
-        "signup_link": "Sign up"
+        "signup_link": "Sign up",
+        "remember_me": "Remember Me"
     },
     "signup": {
         "title": "Create Your Shop Account",
@@ -27,7 +28,8 @@
         "signup_button": "Create Account & Login",
         "has_account": "Already have an account?",
         "login_link": "Log in",
-        "upload_logo": "Upload Logo"
+        "upload_logo": "Upload Logo",
+        "email_exists_error": "This email is already registered. Please log in instead."
     },
     "sidebar": {
         "dashboard": "Dashboard",

@@ -30,7 +30,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
 
   return (
     <aside 
-      className={`bg-slate-800 flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}
+      className={`bg-slate-900 flex flex-col shadow-lg transition-all duration-300 ease-in-out ${isExpanded ? 'w-64' : 'w-20'}`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >

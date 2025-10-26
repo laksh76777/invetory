@@ -12,7 +12,8 @@
         "password_placeholder": "पासवर्ड",
         "login_button": "लॉगिन करें",
         "no_account": "खाता नहीं है?",
-        "signup_link": "साइन अप करें"
+        "signup_link": "साइन अप करें",
+        "remember_me": "मुझे याद रखें"
     },
     "signup": {
         "title": "अपनी दुकान का खाता बनाएं",
@@ -27,7 +28,8 @@
         "signup_button": "खाता बनाएं और लॉगिन करें",
         "has_account": "पहले से ही खाता है?",
         "login_link": "लॉगिन करें",
-        "upload_logo": "लोगो अपलोड करें"
+        "upload_logo": "लोगो अपलोड करें",
+        "email_exists_error": "यह ईमेल पहले से पंजीकृत है। कृपया इसके बजाय लॉगिन करें।"
     },
     "sidebar": {
         "dashboard": "डैशबोर्ड",

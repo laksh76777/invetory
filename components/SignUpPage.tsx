@@ -45,7 +45,12 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
     }
     const result = signup({ email, password, name, shopName, shopAddress, phoneNumber, gstNumber, taxRate, shopLogo });
     if (!result.success) {
-      setError(result.error || 'An unknown error occurred during sign-up.');
+      // Use the specific error message from the hook
+      if (result.error === 'This email is already registered. Please log in instead.') {
+          setError(t('signup.email_exists_error'));
+      } else {
+          setError(result.error || 'An unknown error occurred during sign-up.');
+      }
     }
   };
 
@@ -53,7 +58,7 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-slate-800 rounded-xl shadow-lg p-8 border border-slate-200 dark:border-slate-700">
+      <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-xl shadow-lg p-8 border border-slate-200 dark:border-slate-700">
         <h1 className="text-3xl font-bold text-center text-slate-900 dark:text-white mb-6">{t('signup.title')}</h1>
         <form onSubmit={handleSignUp} className="space-y-4">
         <div className="flex flex-col items-center space-y-3">

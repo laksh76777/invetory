@@ -12,7 +12,8 @@
         "password_placeholder": "ಪಾಸ್ವರ್ಡ್",
         "login_button": "ಲಾಗಿನ್ ಮಾಡಿ",
         "no_account": "ಖಾತೆ ಇಲ್ಲವೇ?",
-        "signup_link": "ಸೈನ್ ಅಪ್ ಮಾಡಿ"
+        "signup_link": "ಸೈನ್ ಅಪ್ ಮಾಡಿ",
+        "remember_me": "ನನ್ನನ್ನು ನೆನಪಿಡಿ"
     },
     "signup": {
         "title": "ನಿಮ್ಮ ಅಂಗಡಿ ಖಾತೆಯನ್ನು ರಚಿಸಿ",
@@ -27,7 +28,8 @@
         "signup_button": "ಖಾತೆ ರಚಿಸಿ ಮತ್ತು ಲಾಗಿನ್ ಮಾಡಿ",
         "has_account": "ಈಗಾಗಲೇ ಖಾತೆ ಇದೆಯೇ?",
         "login_link": "ಲಾಗಿನ್ ಮಾಡಿ",
-        "upload_logo": "ಲೋಗೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ"
+        "upload_logo": "ಲೋಗೋ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ",
+        "email_exists_error": "ಈ ಇಮೇಲ್ ಈಗಾಗಲೇ ನೋಂದಾಯಿಸಲಾಗಿದೆ. ದಯವಿಟ್ಟು ಲಾಗಿನ್ ಮಾಡಿ."
     },
     "sidebar": {
         "dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್",

@@ -12,7 +12,6 @@ import PointOfSale from './components/PointOfSale';
 import Reports from './components/Reports';
 import Settings from './components/Settings';
 import Footer from './components/Footer';
-import LanguageSwitcher from './components/LanguageSwitcher';
 
 const App: React.FC = () => {
   const [isLoginView, setIsLoginView] = useState(true);
@@ -52,7 +51,6 @@ const App: React.FC = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 lg:p-8">
           <div className="max-w-7xl mx-auto">
-            <LanguageSwitcher />
             {renderView()}
           </div>
         </main>

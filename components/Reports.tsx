@@ -52,7 +52,7 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
         <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8">{t('reports.title')}</h1>
             
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 mb-8 border border-slate-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-6 mb-8 border border-slate-200 dark:border-slate-700">
                 <h2 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">{t('reports.sales_over_time')}</h2>
                 <ResponsiveContainer width="100%" height={400}>
                     <LineChart data={salesDataLast7Days}>
@@ -74,7 +74,7 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
                 </ResponsiveContainer>
             </div>
             
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700">
                 <h2 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">{t('reports.top_selling_products')}</h2>
                  <ul className="space-y-2">
                     {topSellingProducts.map((product, index) => (

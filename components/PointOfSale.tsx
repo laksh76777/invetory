@@ -148,7 +148,7 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
       `}</style>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
         {/* Barcode Input */}
-        <div className="lg:col-span-2 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-4 md:p-8">
+        <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center p-4 md:p-8">
           <div className="w-full max-w-lg text-center">
             <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">{t('pos.scan_or_enter_barcode')}</h2>
             <p className="text-slate-500 dark:text-slate-400 mb-6">{t('pos.main_instruction')}</p>
@@ -171,7 +171,7 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
 
 
         {/* Cart */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col">
           <h2 className="text-xl font-bold p-4 border-b border-slate-200 dark:border-slate-700 flex items-center text-slate-800 dark:text-slate-200">
               <ShoppingCartIcon className="mr-3" /> {t('pos.cart_title')}
           </h2>
@@ -199,7 +199,7 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
                   </ul>
               )}
           </div>
-          <div className="p-4 border-t border-slate-200 dark:border-slate-700 space-y-3 bg-slate-50 dark:bg-slate-800/50 rounded-b-xl">
+          <div className="p-4 border-t border-slate-200 dark:border-slate-700 space-y-3 bg-slate-50 dark:bg-slate-900/50 rounded-b-xl">
               <div className="flex justify-between text-sm text-slate-600 dark:text-slate-300">
                   <span>{t('pos.subtotal_label')}</span>
                   <span>₹{subtotal.toFixed(2)}</span>

@@ -98,7 +98,7 @@ const Settings: React.FC = () => {
 
       <form onSubmit={handleSaveChanges} className="max-w-4xl mx-auto space-y-8">
         {/* Shop Profile Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
             <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.shop_profile_title')}</h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
@@ -148,7 +148,7 @@ const Settings: React.FC = () => {
 
         {/* User and Tax Section */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
                 <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.profile_title')}</h2>
                 <div className="space-y-6">
                     <div>
@@ -161,7 +161,7 @@ const Settings: React.FC = () => {
                     </div>
                 </div>
             </div>
-            <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
                 <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.tax_config_title')}</h2>
                 <div>
                     <label htmlFor="taxRate" className="block text-sm font-medium">{t('settings.tax_rate')}</label>
@@ -174,7 +174,7 @@ const Settings: React.FC = () => {
         </div>
         
         {/* Appearance Section */}
-        <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
             <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.appearance_title')}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
@@ -216,7 +216,7 @@ const Settings: React.FC = () => {
         </div>
       </form>
         
-      <div className="max-w-4xl mx-auto my-8 bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+      <div className="max-w-4xl mx-auto my-8 bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
           <h2 className="text-xl font-bold mb-4">{t('settings.account_actions')}</h2>
           <div className="flex justify-between items-center">
             <p className="text-slate-600 dark:text-slate-300">{t('settings.logout_description')}</p>

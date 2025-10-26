@@ -47,7 +47,7 @@ const getInitialTheme = (): Theme => {
   } catch (error) {
     console.error("Failed to parse theme from localStorage", error);
   }
-  return { color: 'indigo', mode: 'system' };
+  return { color: 'sky', mode: 'system' };
 };
 
 
