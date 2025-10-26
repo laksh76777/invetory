@@ -34,22 +34,22 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
-        <div className="w-full md:w-auto md:flex-1">
-            <input 
-              type="text"
-              placeholder={t('products.search_placeholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full max-w-md p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition"
-            />
-        </div>
-        <div className="w-full md:w-auto flex justify-end">
-            <Button onClick={openAddModal} className="w-full md:w-auto">
-              <PlusCircleIcon className="mr-2" />
-              {t('products.add_button')}
-            </Button>
-        </div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{t('products.title')}</h1>
+        <Button onClick={openAddModal}>
+          <PlusCircleIcon className="mr-2" />
+          {t('products.add_button')}
+        </Button>
+      </div>
+
+      <div className="mb-6">
+        <input 
+          type="text"
+          placeholder={t('products.search_placeholder')}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full max-w-md p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition"
+        />
       </div>
 
       <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden">

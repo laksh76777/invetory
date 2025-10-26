@@ -94,7 +94,9 @@ const Settings: React.FC = () => {
 
   return (
     <div>
-      <form onSubmit={handleSaveChanges} className="space-y-8">
+      <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8">{t('settings.title')}</h1>
+
+      <form onSubmit={handleSaveChanges} className="max-w-4xl mx-auto space-y-8">
         {/* Shop Profile Section */}
         <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
             <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.shop_profile_title')}</h2>

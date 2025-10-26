@@ -11,7 +11,7 @@ const LanguageSwitcher: React.FC = () => {
   ];
 
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end mb-6">
       <div className="bg-white dark:bg-slate-800 rounded-lg shadow-sm p-1 flex space-x-1 border border-slate-200 dark:border-slate-700">
         {languages.map(lang => (
           <button

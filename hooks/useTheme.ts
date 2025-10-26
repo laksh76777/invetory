@@ -3,11 +3,6 @@ import type { ThemeMode } from '../types';
 
 // Define color palettes (values are R G B strings)
 const COLORS: Record<string, Record<string, string>> = {
-  violet: {
-    '50': '245 243 255', '100': '237 233 254', '200': '221 214 254', '300': '196 181 253',
-    '400': '167 139 250', '500': '139 92 246', '600': '124 58 237', '700': '109 40 217',
-    '800': '91 33 182', '900': '76 29 149'
-  },
   indigo: {
     '50': '238 242 255', '100': '224 231 255', '200': '199 210 254', '300': '165 180 252',
     '400': '129 140 248', '500': '99 102 241', '600': '79 70 229', '700': '67 56 202',
@@ -52,7 +47,7 @@ const getInitialTheme = (): Theme => {
   } catch (error) {
     console.error("Failed to parse theme from localStorage", error);
   }
-  return { color: 'violet', mode: 'system' };
+  return { color: 'indigo', mode: 'system' };
 };
 
 

@@ -34,8 +34,7 @@
         "products": "Products",
         "pos": "Point of Sale",
         "reports": "Reports",
-        "settings": "Settings",
-        "logout": "Logout"
+        "settings": "Settings"
     },
     "dashboard": {
         "title": "Dashboard",
