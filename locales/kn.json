@@ -7,7 +7,7 @@
         "print": "ಪ್ರಿಂಟ್ ಮಾಡಿ"
     },
     "login": {
-        "title": "ಮರಳಿ ಸ್ವಾಗತ!",
+        "title": "ಸಮಗ್ರ360 ಗೆ ಸುಸ್ವಾಗತ",
         "email_placeholder": "ಇಮೇಲ್ ವಿಳಾಸ",
         "password_placeholder": "ಪಾಸ್ವರ್ಡ್",
         "login_button": "ಲಾಗಿನ್ ಮಾಡಿ",
@@ -16,7 +16,7 @@
         "remember_me": "ನನ್ನನ್ನು ನೆನಪಿಡಿ"
     },
     "signup": {
-        "title": "ನಿಮ್ಮ ಅಂಗಡಿ ಖಾತೆಯನ್ನು ರಚಿಸಿ",
+        "title": "ನಿಮ್ಮ ಸಮಗ್ರ360 ಖಾತೆಯನ್ನು ರಚಿಸಿ",
         "shop_name_placeholder": "ಅಂಗಡಿ ಹೆಸರು*",
         "shop_address_placeholder": "ಅಂಗಡಿ ವಿಳಾಸ*",
         "gst_number_placeholder": "ಜಿಎಸ್ಟಿ ಸಂಖ್ಯೆ (ಐಚ್ಛಿಕ)",

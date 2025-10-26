@@ -7,7 +7,7 @@
         "print": "प्रिंट करें"
     },
     "login": {
-        "title": "वापसी पर स्वागत है!",
+        "title": "समग्र360 में आपका स्वागत है",
         "email_placeholder": "ईमेल पता",
         "password_placeholder": "पासवर्ड",
         "login_button": "लॉगिन करें",
@@ -16,7 +16,7 @@
         "remember_me": "मुझे याद रखें"
     },
     "signup": {
-        "title": "अपनी दुकान का खाता बनाएं",
+        "title": "अपना समग्र360 खाता बनाएं",
         "shop_name_placeholder": "दुकान का नाम*",
         "shop_address_placeholder": "दुकान का पता*",
         "gst_number_placeholder": "जीएसटी नंबर (वैकल्पिक)",

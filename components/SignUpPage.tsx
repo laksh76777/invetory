@@ -54,19 +54,22 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
     }
   };
 
-  const formInputStyle = "w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition";
+  const formInputStyle = "w-full p-3 border border-white/20 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition";
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center p-4">
-      <div className="max-w-md w-full bg-white dark:bg-slate-900 rounded-xl shadow-lg p-8 border border-slate-200 dark:border-slate-700">
-        <h1 className="text-3xl font-bold text-center text-slate-900 dark:text-white mb-6">{t('signup.title')}</h1>
-        <form onSubmit={handleSignUp} className="space-y-4">
+    <div
+      className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
+      style={{ backgroundImage: "url('https://storage.googleapis.com/aistudio-hosting/images/8e612330-d3b5-410a-9957-3f95b3d681f2.png')" }}
+    >
+      <div className="max-w-md w-full bg-black/20 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-white/20">
+        <h1 className="text-3xl font-bold text-center text-white mb-6">{t('signup.title')}</h1>
+        <form onSubmit={handleSignUp} className="space-y-4 max-h-[75vh] overflow-y-auto pr-2">
         <div className="flex flex-col items-center space-y-3">
-            <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-slate-700 flex items-center justify-center ring-2 ring-slate-200 dark:ring-slate-600 overflow-hidden">
+            <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center ring-2 ring-white/20 overflow-hidden">
                 {shopLogo ? (
                     <img src={shopLogo} alt="Shop Logo Preview" className="w-full h-full object-cover" />
                 ) : (
-                    <ShopIcon className="w-12 h-12 text-slate-400 dark:text-slate-500" />
+                    <ShopIcon className="w-12 h-12 text-slate-400" />
                 )}
             </div>
              <input type="file" accept="image/*" ref={fileInputRef} onChange={handleLogoChange} className="hidden" />
@@ -75,7 +78,7 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
                    {t('signup.upload_logo')}
                 </Button>
                 {shopLogo && (
-                    <button type="button" onClick={removeLogo} className="ml-2 text-slate-500 hover:text-red-500 transition p-2">
+                    <button type="button" onClick={removeLogo} className="ml-2 text-slate-300 hover:text-red-400 transition p-2">
                         <TrashIcon className="w-5 h-5" />
                     </button>
                 )}
@@ -124,7 +127,7 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
                 min="0"
                 step="0.01"
               />
-              <span className="absolute inset-y-0 right-3 flex items-center text-slate-500 dark:text-slate-400 pointer-events-none">%</span>
+              <span className="absolute inset-y-0 right-3 flex items-center text-slate-400 pointer-events-none">%</span>
             </div>
           <input
             type="text"
@@ -150,12 +153,12 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
             className={formInputStyle}
             required
           />
-          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+          {error && <p className="text-red-400 text-sm text-center">{error}</p>}
           <Button type="submit" className="w-full mt-2 !py-3">{t('signup.signup_button')}</Button>
         </form>
-        <p className="text-center text-sm text-slate-600 dark:text-slate-400 mt-6">
+        <p className="text-center text-sm text-slate-300 mt-6">
           {t('signup.has_account')}{' '}
-          <button onClick={onSwitchToLogin} className="font-medium text-primary-600 hover:underline">
+          <button onClick={onSwitchToLogin} className="font-medium text-primary-400 hover:underline">
             {t('signup.login_link')}
           </button>
         </p>

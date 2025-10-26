@@ -7,7 +7,7 @@
         "print": "Print"
     },
     "login": {
-        "title": "Welcome Back!",
+        "title": "Welcome to Samagra360",
         "email_placeholder": "Email Address",
         "password_placeholder": "Password",
         "login_button": "Login",
@@ -16,7 +16,7 @@
         "remember_me": "Remember Me"
     },
     "signup": {
-        "title": "Create Your Shop Account",
+        "title": "Create Your Samagra360 Account",
         "shop_name_placeholder": "Shop Name*",
         "shop_address_placeholder": "Shop Address*",
         "gst_number_placeholder": "GST Number (Optional)",
