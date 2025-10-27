@@ -73,7 +73,7 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
                   <td className="px-6 py-4">{product.category}</td>
                   <td className="px-6 py-4">₹{product.price.toFixed(2)}</td>
                   <td className={`px-6 py-4 font-semibold ${product.stock <= product.lowStockThreshold ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}`}>
-                    {product.stock}
+                    {Math.max(0, product.stock)}
                   </td>
                   <td className="px-6 py-4 font-mono text-slate-600 dark:text-slate-400">{product.barcode}</td>
                   <td className="px-6 py-4">{new Date(product.expiryDate).toLocaleDateString('en-IN')}</td>
@@ -163,9 +163,19 @@ const ProductFormModal: React.FC<{
         }
     } else {
         const isNumberInput = type === 'number';
+        let finalValue: string | number = value;
+        if (isNumberInput) {
+            const parsedValue = parseFloat(value);
+            if (['price', 'stock', 'lowStockThreshold'].includes(name)) {
+                // Use Math.max to ensure value is not negative
+                finalValue = Math.max(0, isNaN(parsedValue) ? 0 : parsedValue);
+            } else {
+                finalValue = isNaN(parsedValue) ? 0 : parsedValue;
+            }
+        }
         setFormData(prev => ({
           ...prev,
-          [name]: isNumberInput ? parseFloat(value) || 0 : value,
+          [name]: finalValue,
         }));
     }
   };

@@ -46,9 +46,6 @@
         "different_items_in_stock": "स्टॉक में विभिन्न वस्तुएं",
         "total_revenue": "कुल राजस्व",
         "total_revenue_description_all_time": "सभी पूर्ण बिक्रियों से",
-        "total_revenue_description_today": "आज का राजस्व",
-        "total_revenue_description_this_week": "इस सप्ताह का राजस्व",
-        "total_revenue_description_this_month": "इस महीने का राजस्व",
         "low_stock_alerts": "कम स्टॉक अलर्ट",
         "items_needing_restock": "वस्तुएं जिन्हें पुनः स्टॉक करने की आवश्यकता है",
         "expiring_soon": "जल्द समाप्त हो रहे हैं",
@@ -60,11 +57,11 @@
         "no_products_expiring_soon": "कोई भी उत्पाद जल्द ही समाप्त नहीं हो रहा है।",
         "days_left": "{days} दिन शेष",
         "expires_today": "आज समाप्त हो रहा है",
-        "revenue_period": {
-            "today": "आज",
-            "this_week": "सप्ताह",
-            "this_month": "महीना",
-            "all_time": "कुल समय"
+        "reset_revenue_button_label": "राजस्व रीसेट करें",
+        "reset_revenue_modal": {
+            "title": "राजस्व डेटा रीसेट करें?",
+            "body": "यह सभी बिक्री इतिहास को साफ़ कर देगा और कुल राजस्व को शून्य पर रीसेट कर देगा। यह क्रिया पूर्ववत नहीं की जा सकती।",
+            "confirm_button": "हाँ, राजस्व रीसेट करें"
         }
     },
     "products": {
@@ -185,13 +182,7 @@
         "account_actions": "खाता कार्रवाइयाँ",
         "logout_description": "अपने वर्तमान सत्र से लॉग आउट करें।",
         "logout_button": "लॉगआउट करें",
-        "data_management": {
-            "title": "डेटा प्रबंधन",
-            "clear_sales_data_button": "सभी बिक्री डेटा साफ़ करें",
-            "clear_sales_data_description": "सभी बिक्री इतिहास को स्थायी रूप से हटाएं। यह एक नई वित्तीय अवधि शुरू करने के लिए उपयोगी है। यह क्रिया पूर्ववत नहीं की जा सकती।",
-            "confirm_modal_title": "क्या आप पूरी तरह निश्चित हैं?",
-            "confirm_modal_body": "यह क्रिया आपके सभी बिक्री डेटा को स्थायी रूप से हटा देगी। इसे पूर्ववत नहीं किया जा सकता।",
-            "confirm_modal_confirm_button": "हाँ, सभी बिक्री हटाएँ"
-        }
+        "dashboard_widgets": "डैशबोर्ड विजेट",
+        "show_revenue_card": "'कुल राजस्व' कार्ड दिखाएं"
     }
 }

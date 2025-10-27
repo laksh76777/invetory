@@ -112,6 +112,13 @@ export const CloseIcon: React.FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
+export const ResetIcon: React.FC<{ className?: string }> = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 13.5c0 4.69-3.81 8.5-8.5 8.5S4 18.19 4 13.5 7.81 5 12.5 5c2.34 0 4.47.94 6 2.5"/>
+        <path d="M18 9v-4h-4"/>
+    </svg>
+);
+
 export const InstagramIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>

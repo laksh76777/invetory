@@ -18,6 +18,18 @@ const App: React.FC = () => {
   const { currentUser } = useAuth();
   const inventory = useInventory(currentUser?.id || null);
   const [currentView, setCurrentView] = useState<View>('dashboard');
+  const [showRevenueCard, setShowRevenueCard] = useState<boolean>(() => {
+    const saved = localStorage.getItem('showRevenueCard');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const toggleRevenueCard = () => {
+    setShowRevenueCard(prev => {
+        const newState = !prev;
+        localStorage.setItem('showRevenueCard', JSON.stringify(newState));
+        return newState;
+    });
+  };
 
   if (!currentUser) {
     return isLoginView
@@ -28,7 +40,7 @@ const App: React.FC = () => {
   const renderView = () => {
     switch (currentView) {
       case 'dashboard':
-        return <Dashboard {...inventory} />;
+        return <Dashboard {...inventory} clearSalesData={inventory.clearSalesData} showRevenueCard={showRevenueCard} />;
       case 'products':
         return <Products {...inventory} />;
       case 'pos':
@@ -36,9 +48,9 @@ const App: React.FC = () => {
       case 'reports':
         return <Reports {...inventory} />;
       case 'settings':
-        return <Settings clearSalesData={inventory.clearSalesData} />;
+        return <Settings showRevenueCard={showRevenueCard} onToggleRevenueCard={toggleRevenueCard} />;
       default:
-        return <Dashboard {...inventory} />;
+        return <Dashboard {...inventory} clearSalesData={inventory.clearSalesData} showRevenueCard={showRevenueCard} />;
     }
   };
 

@@ -46,9 +46,6 @@
         "different_items_in_stock": "Different items in stock",
         "total_revenue": "Total Revenue",
         "total_revenue_description_all_time": "From all completed sales",
-        "total_revenue_description_today": "Revenue for today",
-        "total_revenue_description_this_week": "Revenue this week",
-        "total_revenue_description_this_month": "Revenue this month",
         "low_stock_alerts": "Low Stock Alerts",
         "items_needing_restock": "Items needing restock",
         "expiring_soon": "Expiring Soon",
@@ -60,11 +57,11 @@
         "no_products_expiring_soon": "No products are expiring soon.",
         "days_left": "{days} days left",
         "expires_today": "Expires today",
-        "revenue_period": {
-            "today": "Today",
-            "this_week": "Week",
-            "this_month": "Month",
-            "all_time": "All Time"
+        "reset_revenue_button_label": "Reset Revenue",
+        "reset_revenue_modal": {
+            "title": "Reset Revenue Data?",
+            "body": "This will clear all sales history and reset the total revenue to zero. This action cannot be undone.",
+            "confirm_button": "Yes, Reset Revenue"
         }
     },
     "products": {
@@ -185,13 +182,7 @@
         "account_actions": "Account Actions",
         "logout_description": "Log out of your current session.",
         "logout_button": "Logout",
-        "data_management": {
-            "title": "Data Management",
-            "clear_sales_data_button": "Clear All Sales Data",
-            "clear_sales_data_description": "Permanently delete all sales history. This is useful for starting a new financial period. This action cannot be undone.",
-            "confirm_modal_title": "Are you absolutely sure?",
-            "confirm_modal_body": "This action will permanently delete all your sales data. This cannot be undone.",
-            "confirm_modal_confirm_button": "Yes, Delete All Sales"
-        }
+        "dashboard_widgets": "Dashboard Widgets",
+        "show_revenue_card": "Show 'Total Revenue' Card"
     }
 }

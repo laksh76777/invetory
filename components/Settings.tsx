@@ -3,15 +3,15 @@ import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../hooks/useTheme';
 import Button from './ui/Button';
-import { LogoutIcon, ShopIcon, TrashIcon } from './icons/Icons';
+import { LogoutIcon, ShopIcon } from './icons/Icons';
 import type { ThemeMode, User } from '../types';
-import Modal from './ui/Modal';
 
 interface SettingsProps {
-  clearSalesData: () => void;
+  showRevenueCard: boolean;
+  onToggleRevenueCard: () => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({ clearSalesData }) => {
+const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCard }) => {
   const { currentUser, updateUser, logout } = useAuth();
   const { t } = useTranslation();
   const { theme, updateTheme, availableColors } = useTheme();
@@ -27,7 +27,6 @@ const Settings: React.FC<SettingsProps> = ({ clearSalesData }) => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoRemoved, setLogoRemoved] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
-  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -90,11 +89,6 @@ const Settings: React.FC<SettingsProps> = ({ clearSalesData }) => {
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000); // Hide message after 3 seconds
   };
-
-  const handleClearSales = () => {
-      clearSalesData();
-      setIsConfirmModalOpen(false);
-  }
   
   if (!currentUser) {
     return null; // Or a loading spinner
@@ -219,6 +213,16 @@ const Settings: React.FC<SettingsProps> = ({ clearSalesData }) => {
                     </div>
                 </div>
             </div>
+            <div className="mt-8">
+              <label className="block text-sm font-medium mb-3">{t('settings.dashboard_widgets')}</label>
+              <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
+                  <span className="text-slate-700 dark:text-slate-300">{t('settings.show_revenue_card')}</span>
+                  <label htmlFor="toggle-revenue" className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" id="toggle-revenue" className="sr-only peer" checked={showRevenueCard} onChange={onToggleRevenueCard} />
+                      <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
+                  </label>
+              </div>
+            </div>
         </div>
         
         <div className="flex justify-end items-center gap-4 pt-4">
@@ -237,36 +241,6 @@ const Settings: React.FC<SettingsProps> = ({ clearSalesData }) => {
             </Button>
           </div>
       </div>
-      
-      <div className="max-w-4xl mx-auto my-8 bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-red-500/50 dark:border-red-500/30">
-        <h2 className="text-xl font-bold mb-4 text-red-600 dark:text-red-400">{t('settings.data_management.title')}</h2>
-        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-            <p className="text-slate-600 dark:text-slate-300 max-w-lg">{t('settings.data_management.clear_sales_data_description')}</p>
-            <Button variant="secondary" onClick={() => setIsConfirmModalOpen(true)} className="!bg-red-500 !text-white hover:!bg-red-600 focus:!ring-red-500 flex-shrink-0">
-              <TrashIcon className="mr-2" />
-              {t('settings.data_management.clear_sales_data_button')}
-            </Button>
-          </div>
-      </div>
-
-      {isConfirmModalOpen && (
-          <Modal
-              isOpen={isConfirmModalOpen}
-              onClose={() => setIsConfirmModalOpen(false)}
-              title={t('settings.data_management.confirm_modal_title')}
-          >
-              <div className="text-center">
-                  <p className="text-slate-700 dark:text-slate-300 mb-6">{t('settings.data_management.confirm_modal_body')}</p>
-                   <div className="flex justify-center gap-4">
-                        <Button variant="secondary" onClick={() => setIsConfirmModalOpen(false)}>{t('common.cancel')}</Button>
-                        <Button onClick={handleClearSales} className="!bg-red-600 hover:!bg-red-700 focus:!ring-red-500">
-                            {t('settings.data_management.confirm_modal_confirm_button')}
-                        </Button>
-                    </div>
-              </div>
-          </Modal>
-      )}
-
     </div>
   );
 };

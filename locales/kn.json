@@ -46,9 +46,6 @@
         "different_items_in_stock": "ಸ್ಟಾಕ್‌ನಲ್ಲಿರುವ ವಿವಿಧ ವಸ್ತುಗಳು",
         "total_revenue": "ಒಟ್ಟು ಆದಾಯ",
         "total_revenue_description_all_time": "ಎಲ್ಲಾ ಪೂರ್ಣಗೊಂಡ ಮಾರಾಟಗಳಿಂದ",
-        "total_revenue_description_today": "ಇಂದಿನ ಆದಾಯ",
-        "total_revenue_description_this_week": "ಈ ವಾರದ ಆದಾಯ",
-        "total_revenue_description_this_month": "ಈ ತಿಂಗಳ ಆದಾಯ",
         "low_stock_alerts": "ಕಡಿಮೆ ಸ್ಟಾಕ್ ಎಚ್ಚರಿಕೆಗಳು",
         "items_needing_restock": "ಮರುಸ್ಟಾಕ್ ಮಾಡಬೇಕಾದ ವಸ್ತುಗಳು",
         "expiring_soon": "ಶೀಘ್ರದಲ್ಲೇ ಅವಧಿ ಮುಗಿಯುತ್ತಿದೆ",
@@ -60,11 +57,11 @@
         "no_products_expiring_soon": "ಯಾವುದೇ ಉತ್ಪನ್ನಗಳು ಶೀಘ್ರದಲ್ಲೇ ಅವಧಿ ಮುಗಿಯುತ್ತಿಲ್ಲ.",
         "days_left": "{days} ದಿನಗಳು ಉಳಿದಿವೆ",
         "expires_today": "ಇಂದು ಅವಧಿ ಮುಗಿಯುತ್ತದೆ",
-        "revenue_period": {
-            "today": "ಇಂದು",
-            "this_week": "ವಾರ",
-            "this_month": "ತಿಂಗಳು",
-            "all_time": "ಎಲ್ಲಾ ಸಮಯ"
+        "reset_revenue_button_label": "ಆದಾಯವನ್ನು ಮರುಹೊಂದಿಸಿ",
+        "reset_revenue_modal": {
+            "title": "ಆದಾಯ ಡೇಟಾವನ್ನು ಮರುಹೊಂದಿಸುವುದೇ?",
+            "body": "ಇದು ಎಲ್ಲಾ ಮಾರಾಟ ಇತಿಹಾಸವನ್ನು ತೆರವುಗೊಳಿಸುತ್ತದೆ ಮತ್ತು ಒಟ್ಟು ಆದಾಯವನ್ನು ಶೂನ್ಯಕ್ಕೆ ಮರುಹೊಂದಿಸುತ್ತದೆ. ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+            "confirm_button": "ಹೌದು, ಆದಾಯವನ್ನು ಮರುಹೊಂದಿಸಿ"
         }
     },
     "products": {
@@ -185,13 +182,7 @@
         "account_actions": "ಖಾತೆ ಕ್ರಿಯೆಗಳು",
         "logout_description": "ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಸೆಷನ್‌ನಿಂದ ಲಾಗ್‌ಔಟ್ ಮಾಡಿ.",
         "logout_button": "ಲಾಗ್‌ಔಟ್",
-        "data_management": {
-            "title": "ಡೇಟಾ ನಿರ್ವಹಣೆ",
-            "clear_sales_data_button": "ಎಲ್ಲಾ ಮಾರಾಟ ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಿ",
-            "clear_sales_data_description": "ಎಲ್ಲಾ ಮಾರಾಟ ಇತಿಹಾಸವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿ. ಹೊಸ ಹಣಕಾಸು ಅವಧಿಯನ್ನು ಪ್ರಾರಂಭಿಸಲು ಇದು ಉಪಯುಕ್ತವಾಗಿದೆ. ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
-            "confirm_modal_title": "ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ಖಚಿತವಾಗಿದ್ದೀರಾ?",
-            "confirm_modal_body": "ಈ ಕ್ರಿಯೆಯು ನಿಮ್ಮ ಎಲ್ಲಾ ಮಾರಾಟ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
-            "confirm_modal_confirm_button": "ಹೌದು, ಎಲ್ಲಾ ಮಾರಾಟಗಳನ್ನು ಅಳಿಸಿ"
-        }
+        "dashboard_widgets": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ವಿಜೆಟ್‌ಗಳು",
+        "show_revenue_card": "'ಒಟ್ಟು ಆದಾಯ' ಕಾರ್ಡ್ ತೋರಿಸಿ"
     }
 }
