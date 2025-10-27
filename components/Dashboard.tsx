@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import type { InventoryHook, Sale } from '../types';
+import type { InventoryHook } from '../types';
 import Card from './ui/Card';
 import { WarningIcon, ExpirationIcon, CheckCircleIcon, ResetIcon } from './icons/Icons';
 import { useTranslation } from '../hooks/useTranslation';
@@ -9,11 +9,10 @@ import Modal from './ui/Modal';
 
 
 interface DashboardProps extends InventoryHook {
-  clearSalesData: () => void;
   showRevenueCard: boolean;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ products, sales, clearSalesData, showRevenueCard }) => {
+const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRevenue, revenueResetTimestamp, showRevenueCard }) => {
   const { t, language } = useTranslation();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -48,12 +47,20 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, clearSalesData, 
   
   const totalProducts = products.length;
 
-  const totalRevenue = useMemo(() => {
-    return sales.reduce((sum, sale) => sum + sale.total, 0);
-  }, [sales]);
-  
-  const revenueDescription = t('dashboard.total_revenue_description_all_time');
+  const { totalRevenue, revenueDescription } = useMemo(() => {
+    const filteredSales = revenueResetTimestamp
+        ? sales.filter(sale => new Date(sale.date) >= new Date(revenueResetTimestamp))
+        : sales;
 
+    const total = filteredSales.reduce((sum, sale) => sum + sale.total, 0);
+    
+    const description = revenueResetTimestamp
+        ? t('dashboard.total_revenue_description_since_reset').replace('{date}', new Date(revenueResetTimestamp).toLocaleDateString(getLocaleForLanguage(language)))
+        : t('dashboard.total_revenue_description_all_time');
+
+    return { totalRevenue: total, revenueDescription: description };
+  }, [sales, revenueResetTimestamp, t, language]);
+  
   const lowStockProducts = products.filter(p => p.stock <= p.lowStockThreshold);
 
   const getDaysUntilExpiry = (expiryDate?: string) => {
@@ -74,7 +81,7 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, clearSalesData, 
     .sort((a, b) => getDaysUntilExpiry(a.expiryDate) - getDaysUntilExpiry(b.expiryDate));
     
   const handleResetRevenue = () => {
-    clearSalesData();
+    resetDashboardRevenue();
     setIsConfirmModalOpen(false);
   }
 

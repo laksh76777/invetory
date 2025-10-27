@@ -40,7 +40,7 @@ const App: React.FC = () => {
   const renderView = () => {
     switch (currentView) {
       case 'dashboard':
-        return <Dashboard {...inventory} clearSalesData={inventory.clearSalesData} showRevenueCard={showRevenueCard} />;
+        return <Dashboard {...inventory} showRevenueCard={showRevenueCard} />;
       case 'products':
         return <Products {...inventory} />;
       case 'pos':
@@ -48,9 +48,9 @@ const App: React.FC = () => {
       case 'reports':
         return <Reports {...inventory} />;
       case 'settings':
-        return <Settings showRevenueCard={showRevenueCard} onToggleRevenueCard={toggleRevenueCard} />;
+        return <Settings showRevenueCard={showRevenueCard} onToggleRevenueCard={toggleRevenueCard} clearSalesData={inventory.clearSalesData} />;
       default:
-        return <Dashboard {...inventory} clearSalesData={inventory.clearSalesData} showRevenueCard={showRevenueCard} />;
+        return <Dashboard {...inventory} showRevenueCard={showRevenueCard} />;
     }
   };
 

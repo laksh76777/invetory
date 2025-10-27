@@ -36,6 +36,7 @@ const useInventory = (userId: string | null): InventoryHook => {
   const [products, setProducts] = useState<Product[]>([]);
   const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
+  const [revenueResetTimestamp, setRevenueResetTimestamp] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) {
@@ -46,6 +47,7 @@ const useInventory = (userId: string | null): InventoryHook => {
     try {
       const savedProducts = localStorage.getItem(`products_${userId}`);
       const savedSales = localStorage.getItem(`sales_${userId}`);
+      const savedTimestamp = localStorage.getItem(`revenueResetTimestamp_${userId}`);
       
       if (savedProducts) {
         setProducts(JSON.parse(savedProducts));
@@ -68,6 +70,12 @@ const useInventory = (userId: string | null): InventoryHook => {
             setSales([]);
         }
       }
+      
+      if (savedTimestamp) {
+        setRevenueResetTimestamp(savedTimestamp);
+      } else {
+        setRevenueResetTimestamp(null);
+      }
     } catch (error) {
         console.error("Failed to load inventory from localStorage", error);
         // Fallback to empty state if localStorage is corrupt, unless it's the demo user.
@@ -78,6 +86,7 @@ const useInventory = (userId: string | null): InventoryHook => {
             setProducts([]);
             setSales([]);
         }
+        setRevenueResetTimestamp(null);
     } finally {
         setLoading(false);
     }
@@ -168,18 +177,32 @@ const useInventory = (userId: string | null): InventoryHook => {
     return newSale;
   };
   
+  const resetDashboardRevenue = () => {
+    if (userId) {
+        const now = new Date().toISOString();
+        setRevenueResetTimestamp(now);
+        try {
+            localStorage.setItem(`revenueResetTimestamp_${userId}`, now);
+        } catch (error) {
+            console.error("Failed to save revenue reset timestamp", error);
+        }
+    }
+  };
+  
   const clearSalesData = () => {
     setSales([]);
+    setRevenueResetTimestamp(null);
     if (userId) {
       try {
         localStorage.removeItem(`sales_${userId}`);
+        localStorage.removeItem(`revenueResetTimestamp_${userId}`);
       } catch (error) {
-        console.error("Failed to clear sales from localStorage", error);
+        console.error("Failed to clear sales data from localStorage", error);
       }
     }
   };
 
-  return { products, sales, addProduct, updateProduct, deleteProduct, addSale, loading, clearSalesData };
+  return { products, sales, addProduct, updateProduct, deleteProduct, addSale, loading, clearSalesData, resetDashboardRevenue, revenueResetTimestamp };
 };
 
 export default useInventory;

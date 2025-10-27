@@ -46,6 +46,7 @@
         "different_items_in_stock": "Different items in stock",
         "total_revenue": "Total Revenue",
         "total_revenue_description_all_time": "From all completed sales",
+        "total_revenue_description_since_reset": "Revenue since {date}",
         "low_stock_alerts": "Low Stock Alerts",
         "items_needing_restock": "Items needing restock",
         "expiring_soon": "Expiring Soon",
@@ -183,6 +184,14 @@
         "logout_description": "Log out of your current session.",
         "logout_button": "Logout",
         "dashboard_widgets": "Dashboard Widgets",
-        "show_revenue_card": "Show 'Total Revenue' Card"
+        "show_revenue_card": "Show 'Total Revenue' Card",
+        "data_management_title": "Data Management",
+        "clear_sales_data_button": "Clear All Sales Data",
+        "clear_sales_data_description": "Permanently delete all sales history. This will reset your reports. This action cannot be undone.",
+        "clear_sales_modal": {
+            "title": "Clear All Sales Data?",
+            "body": "Are you sure you want to permanently delete all sales data? Your reports will be empty and this action cannot be reversed.",
+            "confirm_button": "Yes, Delete Data"
+        }
     }
 }

@@ -59,6 +59,8 @@ export interface InventoryHook {
   ) => Sale;
   loading: boolean;
   clearSalesData: () => void;
+  resetDashboardRevenue: () => void;
+  revenueResetTimestamp: string | null;
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system';
