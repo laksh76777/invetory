@@ -36,7 +36,7 @@ const App: React.FC = () => {
       case 'reports':
         return <Reports {...inventory} />;
       case 'settings':
-        return <Settings />;
+        return <Settings clearSalesData={inventory.clearSalesData} />;
       default:
         return <Dashboard {...inventory} />;
     }

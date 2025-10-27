@@ -4,7 +4,8 @@
         "save_changes": "बदलाव सहेजें",
         "add_product": "उत्पाद जोड़ें",
         "close": "बंद करें",
-        "print": "प्रिंट करें"
+        "print": "प्रिंट करें",
+        "delete": "हटाएं"
     },
     "login": {
         "title": "समग्र360 में आपका स्वागत है",
@@ -44,7 +45,10 @@
         "total_products": "कुल उत्पाद",
         "different_items_in_stock": "स्टॉक में विभिन्न वस्तुएं",
         "total_revenue": "कुल राजस्व",
-        "total_revenue_description": "सभी पूर्ण बिक्रियों से",
+        "total_revenue_description_all_time": "सभी पूर्ण बिक्रियों से",
+        "total_revenue_description_today": "आज का राजस्व",
+        "total_revenue_description_this_week": "इस सप्ताह का राजस्व",
+        "total_revenue_description_this_month": "इस महीने का राजस्व",
         "low_stock_alerts": "कम स्टॉक अलर्ट",
         "items_needing_restock": "वस्तुएं जिन्हें पुनः स्टॉक करने की आवश्यकता है",
         "expiring_soon": "जल्द समाप्त हो रहे हैं",
@@ -55,7 +59,13 @@
         "expiring_soon_title": "जल्द समाप्त होने वाले उत्पाद",
         "no_products_expiring_soon": "कोई भी उत्पाद जल्द ही समाप्त नहीं हो रहा है।",
         "days_left": "{days} दिन शेष",
-        "expires_today": "आज समाप्त हो रहा है"
+        "expires_today": "आज समाप्त हो रहा है",
+        "revenue_period": {
+            "today": "आज",
+            "this_week": "सप्ताह",
+            "this_month": "महीना",
+            "all_time": "कुल समय"
+        }
     },
     "products": {
         "title": "उत्पाद प्रबंधित करें",
@@ -135,12 +145,21 @@
     },
     "reports": {
         "title": "बिक्री रिपोर्ट",
-        "sales_over_time": "बिक्री राजस्व (पिछले 7 दिन)",
+        "sales_over_time": "बिक्री राजस्व",
         "revenue": "राजस्व",
         "top_selling_products": "सबसे ज्यादा बिकने वाले उत्पाद (मात्रा के अनुसार)",
         "units_sold": "{quantity} इकाइयां बिकीं",
         "total_revenue": "कुल राजस्व",
-        "no_sales_data": "रिपोर्ट बनाने के लिए कोई बिक्री डेटा उपलब्ध नहीं है।"
+        "no_sales_data": "रिपोर्ट बनाने के लिए कोई बिक्री डेटा उपलब्ध नहीं है।",
+        "period": {
+            "this_week": "यह सप्ताह",
+            "this_month": "यह महीना",
+            "this_year": "यह वर्ष"
+        },
+        "todays_revenue": "आज का राजस्व",
+        "this_months_revenue": "इस महीने का राजस्व",
+        "this_years_revenue": "इस वर्ष का राजस्व",
+        "summary_description": "पूर्ण हुई बिक्री पर आधारित"
     },
     "settings": {
         "title": "सेटिंग्स",
@@ -165,6 +184,14 @@
         "saved_message": "बदलाव सफलतापूर्वक सहेजे गए!",
         "account_actions": "खाता कार्रवाइयाँ",
         "logout_description": "अपने वर्तमान सत्र से लॉग आउट करें।",
-        "logout_button": "लॉगआउट करें"
+        "logout_button": "लॉगआउट करें",
+        "data_management": {
+            "title": "डेटा प्रबंधन",
+            "clear_sales_data_button": "सभी बिक्री डेटा साफ़ करें",
+            "clear_sales_data_description": "सभी बिक्री इतिहास को स्थायी रूप से हटाएं। यह एक नई वित्तीय अवधि शुरू करने के लिए उपयोगी है। यह क्रिया पूर्ववत नहीं की जा सकती।",
+            "confirm_modal_title": "क्या आप पूरी तरह निश्चित हैं?",
+            "confirm_modal_body": "यह क्रिया आपके सभी बिक्री डेटा को स्थायी रूप से हटा देगी। इसे पूर्ववत नहीं किया जा सकता।",
+            "confirm_modal_confirm_button": "हाँ, सभी बिक्री हटाएँ"
+        }
     }
 }

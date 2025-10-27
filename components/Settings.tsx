@@ -3,10 +3,15 @@ import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../hooks/useTheme';
 import Button from './ui/Button';
-import { LogoutIcon, ShopIcon } from './icons/Icons';
+import { LogoutIcon, ShopIcon, TrashIcon } from './icons/Icons';
 import type { ThemeMode, User } from '../types';
+import Modal from './ui/Modal';
 
-const Settings: React.FC = () => {
+interface SettingsProps {
+  clearSalesData: () => void;
+}
+
+const Settings: React.FC<SettingsProps> = ({ clearSalesData }) => {
   const { currentUser, updateUser, logout } = useAuth();
   const { t } = useTranslation();
   const { theme, updateTheme, availableColors } = useTheme();
@@ -22,6 +27,7 @@ const Settings: React.FC = () => {
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoRemoved, setLogoRemoved] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -84,6 +90,11 @@ const Settings: React.FC = () => {
     setIsSaved(true);
     setTimeout(() => setIsSaved(false), 3000); // Hide message after 3 seconds
   };
+
+  const handleClearSales = () => {
+      clearSalesData();
+      setIsConfirmModalOpen(false);
+  }
   
   if (!currentUser) {
     return null; // Or a loading spinner
@@ -226,6 +237,36 @@ const Settings: React.FC = () => {
             </Button>
           </div>
       </div>
+      
+      <div className="max-w-4xl mx-auto my-8 bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-red-500/50 dark:border-red-500/30">
+        <h2 className="text-xl font-bold mb-4 text-red-600 dark:text-red-400">{t('settings.data_management.title')}</h2>
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
+            <p className="text-slate-600 dark:text-slate-300 max-w-lg">{t('settings.data_management.clear_sales_data_description')}</p>
+            <Button variant="secondary" onClick={() => setIsConfirmModalOpen(true)} className="!bg-red-500 !text-white hover:!bg-red-600 focus:!ring-red-500 flex-shrink-0">
+              <TrashIcon className="mr-2" />
+              {t('settings.data_management.clear_sales_data_button')}
+            </Button>
+          </div>
+      </div>
+
+      {isConfirmModalOpen && (
+          <Modal
+              isOpen={isConfirmModalOpen}
+              onClose={() => setIsConfirmModalOpen(false)}
+              title={t('settings.data_management.confirm_modal_title')}
+          >
+              <div className="text-center">
+                  <p className="text-slate-700 dark:text-slate-300 mb-6">{t('settings.data_management.confirm_modal_body')}</p>
+                   <div className="flex justify-center gap-4">
+                        <Button variant="secondary" onClick={() => setIsConfirmModalOpen(false)}>{t('common.cancel')}</Button>
+                        <Button onClick={handleClearSales} className="!bg-red-600 hover:!bg-red-700 focus:!ring-red-500">
+                            {t('settings.data_management.confirm_modal_confirm_button')}
+                        </Button>
+                    </div>
+              </div>
+          </Modal>
+      )}
+
     </div>
   );
 };

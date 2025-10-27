@@ -4,7 +4,8 @@
         "save_changes": "ಬದಲಾವಣೆಗಳನ್ನು ಉಳಿಸಿ",
         "add_product": "ಉತ್ಪನ್ನವನ್ನು ಸೇರಿಸಿ",
         "close": "ಮುಚ್ಚಿ",
-        "print": "ಪ್ರಿಂಟ್ ಮಾಡಿ"
+        "print": "ಪ್ರಿಂಟ್ ಮಾಡಿ",
+        "delete": "ಅಳಿಸಿ"
     },
     "login": {
         "title": "ಸಮಗ್ರ360 ಗೆ ಸುಸ್ವಾಗತ",
@@ -44,7 +45,10 @@
         "total_products": "ಒಟ್ಟು ಉತ್ಪನ್ನಗಳು",
         "different_items_in_stock": "ಸ್ಟಾಕ್‌ನಲ್ಲಿರುವ ವಿವಿಧ ವಸ್ತುಗಳು",
         "total_revenue": "ಒಟ್ಟು ಆದಾಯ",
-        "total_revenue_description": "ಎಲ್ಲಾ ಪೂರ್ಣಗೊಂಡ ಮಾರಾಟಗಳಿಂದ",
+        "total_revenue_description_all_time": "ಎಲ್ಲಾ ಪೂರ್ಣಗೊಂಡ ಮಾರಾಟಗಳಿಂದ",
+        "total_revenue_description_today": "ಇಂದಿನ ಆದಾಯ",
+        "total_revenue_description_this_week": "ಈ ವಾರದ ಆದಾಯ",
+        "total_revenue_description_this_month": "ಈ ತಿಂಗಳ ಆದಾಯ",
         "low_stock_alerts": "ಕಡಿಮೆ ಸ್ಟಾಕ್ ಎಚ್ಚರಿಕೆಗಳು",
         "items_needing_restock": "ಮರುಸ್ಟಾಕ್ ಮಾಡಬೇಕಾದ ವಸ್ತುಗಳು",
         "expiring_soon": "ಶೀಘ್ರದಲ್ಲೇ ಅವಧಿ ಮುಗಿಯುತ್ತಿದೆ",
@@ -55,7 +59,13 @@
         "expiring_soon_title": "ಶೀಘ್ರದಲ್ಲೇ ಅವಧಿ ಮುಗಿಯುವ ಉತ್ಪನ್ನಗಳು",
         "no_products_expiring_soon": "ಯಾವುದೇ ಉತ್ಪನ್ನಗಳು ಶೀಘ್ರದಲ್ಲೇ ಅವಧಿ ಮುಗಿಯುತ್ತಿಲ್ಲ.",
         "days_left": "{days} ದಿನಗಳು ಉಳಿದಿವೆ",
-        "expires_today": "ಇಂದು ಅವಧಿ ಮುಗಿಯುತ್ತದೆ"
+        "expires_today": "ಇಂದು ಅವಧಿ ಮುಗಿಯುತ್ತದೆ",
+        "revenue_period": {
+            "today": "ಇಂದು",
+            "this_week": "ವಾರ",
+            "this_month": "ತಿಂಗಳು",
+            "all_time": "ಎಲ್ಲಾ ಸಮಯ"
+        }
     },
     "products": {
         "title": "ಉತ್ಪನ್ನಗಳನ್ನು ನಿರ್ವಹಿಸಿ",
@@ -135,12 +145,21 @@
     },
     "reports": {
         "title": "ಮಾರಾಟ ವರದಿಗಳು",
-        "sales_over_time": "ಮಾರಾಟ ಆದಾಯ (ಕಳೆದ 7 ದಿನಗಳು)",
+        "sales_over_time": "ಮಾರಾಟ ಆದಾಯ",
         "revenue": "ಆದಾಯ",
         "top_selling_products": "ಹೆಚ್ಚು ಮಾರಾಟವಾಗುವ ಉತ್ಪನ್ನಗಳು (ಪ್ರಮಾಣದ ಪ್ರಕಾರ)",
         "units_sold": "{quantity} ಯುನಿಟ್‌ಗಳು ಮಾರಾಟವಾಗಿವೆ",
         "total_revenue": "ಒಟ್ಟು ಆದಾಯ",
-        "no_sales_data": "ವರದಿಗಳನ್ನು ರಚಿಸಲು ಯಾವುದೇ ಮಾರಾಟ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ."
+        "no_sales_data": "ವರದಿಗಳನ್ನು ರಚಿಸಲು ಯಾವುದೇ ಮಾರಾಟ ಡೇಟಾ ಲಭ್ಯವಿಲ್ಲ.",
+        "period": {
+            "this_week": "ಈ ವಾರ",
+            "this_month": "ಈ ತಿಂಗಳು",
+            "this_year": "ಈ ವರ್ಷ"
+        },
+        "todays_revenue": "ಇಂದಿನ ಆದಾಯ",
+        "this_months_revenue": "ಈ ತಿಂಗಳ ಆದಾಯ",
+        "this_years_revenue": "ಈ ವರ್ಷದ ಆದಾಯ",
+        "summary_description": "ಪೂರ್ಣಗೊಂಡ ಮಾರಾಟಗಳ ಆಧಾರದ ಮೇಲೆ"
     },
     "settings": {
         "title": "ಸೆಟ್ಟಿಂಗ್‌ಗಳು",
@@ -165,6 +184,14 @@
         "saved_message": "ಬದಲಾವಣೆಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ!",
         "account_actions": "ಖಾತೆ ಕ್ರಿಯೆಗಳು",
         "logout_description": "ನಿಮ್ಮ ಪ್ರಸ್ತುತ ಸೆಷನ್‌ನಿಂದ ಲಾಗ್‌ಔಟ್ ಮಾಡಿ.",
-        "logout_button": "ಲಾಗ್‌ಔಟ್"
+        "logout_button": "ಲಾಗ್‌ಔಟ್",
+        "data_management": {
+            "title": "ಡೇಟಾ ನಿರ್ವಹಣೆ",
+            "clear_sales_data_button": "ಎಲ್ಲಾ ಮಾರಾಟ ಡೇಟಾವನ್ನು ತೆರವುಗೊಳಿಸಿ",
+            "clear_sales_data_description": "ಎಲ್ಲಾ ಮಾರಾಟ ಇತಿಹಾಸವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸಿ. ಹೊಸ ಹಣಕಾಸು ಅವಧಿಯನ್ನು ಪ್ರಾರಂಭಿಸಲು ಇದು ಉಪಯುಕ್ತವಾಗಿದೆ. ಈ ಕ್ರಿಯೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+            "confirm_modal_title": "ನೀವು ಸಂಪೂರ್ಣವಾಗಿ ಖಚಿತವಾಗಿದ್ದೀರಾ?",
+            "confirm_modal_body": "ಈ ಕ್ರಿಯೆಯು ನಿಮ್ಮ ಎಲ್ಲಾ ಮಾರಾಟ ಡೇಟಾವನ್ನು ಶಾಶ್ವತವಾಗಿ ಅಳಿಸುತ್ತದೆ. ಇದನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.",
+            "confirm_modal_confirm_button": "ಹೌದು, ಎಲ್ಲಾ ಮಾರಾಟಗಳನ್ನು ಅಳಿಸಿ"
+        }
     }
 }

@@ -58,6 +58,7 @@ export interface InventoryHook {
     discount?: { value: number; type: 'percentage' | 'fixed'; amount: number }
   ) => Sale;
   loading: boolean;
+  clearSalesData: () => void;
 }
 
 export type ThemeMode = 'light' | 'dark' | 'system';

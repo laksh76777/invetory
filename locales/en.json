@@ -4,7 +4,8 @@
         "save_changes": "Save Changes",
         "add_product": "Add Product",
         "close": "Close",
-        "print": "Print"
+        "print": "Print",
+        "delete": "Delete"
     },
     "login": {
         "title": "Welcome to Samagra360",
@@ -44,7 +45,10 @@
         "total_products": "Total Products",
         "different_items_in_stock": "Different items in stock",
         "total_revenue": "Total Revenue",
-        "total_revenue_description": "From all completed sales",
+        "total_revenue_description_all_time": "From all completed sales",
+        "total_revenue_description_today": "Revenue for today",
+        "total_revenue_description_this_week": "Revenue this week",
+        "total_revenue_description_this_month": "Revenue this month",
         "low_stock_alerts": "Low Stock Alerts",
         "items_needing_restock": "Items needing restock",
         "expiring_soon": "Expiring Soon",
@@ -55,7 +59,13 @@
         "expiring_soon_title": "Expiring Soon Products",
         "no_products_expiring_soon": "No products are expiring soon.",
         "days_left": "{days} days left",
-        "expires_today": "Expires today"
+        "expires_today": "Expires today",
+        "revenue_period": {
+            "today": "Today",
+            "this_week": "Week",
+            "this_month": "Month",
+            "all_time": "All Time"
+        }
     },
     "products": {
         "title": "Manage Products",
@@ -135,12 +145,21 @@
     },
     "reports": {
         "title": "Sales Reports",
-        "sales_over_time": "Sales Revenue (Last 7 Days)",
+        "sales_over_time": "Sales Revenue",
         "revenue": "Revenue",
         "top_selling_products": "Top Selling Products (by quantity)",
         "units_sold": "{quantity} units sold",
         "total_revenue": "Total Revenue",
-        "no_sales_data": "No sales data available to generate reports."
+        "no_sales_data": "No sales data available to generate reports.",
+        "period": {
+            "this_week": "This Week",
+            "this_month": "This Month",
+            "this_year": "This Year"
+        },
+        "todays_revenue": "Today's Revenue",
+        "this_months_revenue": "This Month's Revenue",
+        "this_years_revenue": "This Year's Revenue",
+        "summary_description": "Based on completed sales"
     },
     "settings": {
         "title": "Settings",
@@ -165,6 +184,14 @@
         "saved_message": "Changes saved successfully!",
         "account_actions": "Account Actions",
         "logout_description": "Log out of your current session.",
-        "logout_button": "Logout"
+        "logout_button": "Logout",
+        "data_management": {
+            "title": "Data Management",
+            "clear_sales_data_button": "Clear All Sales Data",
+            "clear_sales_data_description": "Permanently delete all sales history. This is useful for starting a new financial period. This action cannot be undone.",
+            "confirm_modal_title": "Are you absolutely sure?",
+            "confirm_modal_body": "This action will permanently delete all your sales data. This cannot be undone.",
+            "confirm_modal_confirm_button": "Yes, Delete All Sales"
+        }
     }
 }

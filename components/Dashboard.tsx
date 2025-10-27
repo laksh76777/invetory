@@ -1,13 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import type { InventoryHook } from '../types';
+import React, { useState, useEffect, useMemo } from 'react';
+import type { InventoryHook, Sale } from '../types';
 import Card from './ui/Card';
 import { WarningIcon, ExpirationIcon, CheckCircleIcon } from './icons/Icons';
 import { useTranslation } from '../hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
 
+type Period = 'today' | 'week' | 'month' | 'all';
+
 const Dashboard: React.FC<InventoryHook> = ({ products, sales }) => {
   const { t, language } = useTranslation();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
+  const [revenuePeriod, setRevenuePeriod] = useState<Period>('all');
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -38,7 +41,41 @@ const Dashboard: React.FC<InventoryHook> = ({ products, sales }) => {
   });
   
   const totalProducts = products.length;
-  const totalRevenue = sales.reduce((sum, sale) => sum + sale.total, 0);
+
+  const { totalRevenue, revenueDescription } = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const startOfWeek = new Date(today);
+    startOfWeek.setDate(today.getDate() - today.getDay());
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    let filteredSales: Sale[];
+    let descriptionKey: string;
+
+    switch (revenuePeriod) {
+      case 'today':
+        filteredSales = sales.filter(s => new Date(s.date) >= today);
+        descriptionKey = 'dashboard.total_revenue_description_today';
+        break;
+      case 'week':
+        filteredSales = sales.filter(s => new Date(s.date) >= startOfWeek);
+        descriptionKey = 'dashboard.total_revenue_description_this_week';
+        break;
+      case 'month':
+        filteredSales = sales.filter(s => new Date(s.date) >= startOfMonth);
+        descriptionKey = 'dashboard.total_revenue_description_this_month';
+        break;
+      case 'all':
+      default:
+        filteredSales = sales;
+        descriptionKey = 'dashboard.total_revenue_description_all_time';
+        break;
+    }
+
+    const revenue = filteredSales.reduce((sum, sale) => sum + sale.total, 0);
+    return { totalRevenue: revenue, revenueDescription: t(descriptionKey) };
+  }, [sales, revenuePeriod, t]);
+
   const lowStockProducts = products.filter(p => p.stock <= p.lowStockThreshold);
 
   const getDaysUntilExpiry = (expiryDate?: string) => {
@@ -58,9 +95,22 @@ const Dashboard: React.FC<InventoryHook> = ({ products, sales }) => {
     })
     .sort((a, b) => getDaysUntilExpiry(a.expiryDate) - getDaysUntilExpiry(b.expiryDate));
 
+  const PeriodButton: React.FC<{ period: Period; label: string }> = ({ period, label }) => (
+    <button
+      onClick={() => setRevenuePeriod(period)}
+      className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-colors ${
+        revenuePeriod === period
+          ? 'bg-white dark:bg-primary-900/50 text-primary-600 dark:text-white shadow-sm'
+          : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'
+      }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <div>
-      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
         <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{t('dashboard.title')}</h1>
             <p className="text-slate-500 mt-1">{t('dashboard.welcome_message')}</p>
@@ -71,6 +121,16 @@ const Dashboard: React.FC<InventoryHook> = ({ products, sales }) => {
                 <p className="font-semibold text-sm text-slate-800 dark:text-slate-200 whitespace-nowrap">{formattedDate}</p>
                 <p className="text-slate-500 dark:text-slate-400 text-xs text-right">{formattedTime}</p>
             </div>
+        </div>
+      </div>
+
+       {/* Revenue Period Filter */}
+       <div className="flex justify-end mb-6">
+        <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1 w-full max-w-sm">
+            <PeriodButton period="today" label={t('dashboard.revenue_period.today')} />
+            <PeriodButton period="week" label={t('dashboard.revenue_period.this_week')} />
+            <PeriodButton period="month" label={t('dashboard.revenue_period.this_month')} />
+            <PeriodButton period="all" label={t('dashboard.revenue_period.all_time')} />
         </div>
       </div>
       
@@ -84,7 +144,7 @@ const Dashboard: React.FC<InventoryHook> = ({ products, sales }) => {
         <Card 
           title={t('dashboard.total_revenue')}
           value={`₹${totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-          description={t('dashboard.total_revenue_description')}
+          description={revenueDescription}
         />
         <Card 
           title={t('dashboard.low_stock_alerts')}

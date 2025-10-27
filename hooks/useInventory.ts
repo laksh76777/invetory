@@ -167,8 +167,19 @@ const useInventory = (userId: string | null): InventoryHook => {
 
     return newSale;
   };
+  
+  const clearSalesData = () => {
+    setSales([]);
+    if (userId) {
+      try {
+        localStorage.removeItem(`sales_${userId}`);
+      } catch (error) {
+        console.error("Failed to clear sales from localStorage", error);
+      }
+    }
+  };
 
-  return { products, sales, addProduct, updateProduct, deleteProduct, addSale, loading };
+  return { products, sales, addProduct, updateProduct, deleteProduct, addSale, loading, clearSalesData };
 };
 
 export default useInventory;
