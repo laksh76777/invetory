@@ -14,7 +14,10 @@
         "login_button": "Login",
         "no_account": "Don't have an account?",
         "signup_link": "Sign up",
-        "remember_me": "Remember Me"
+        "remember_me": "Remember Me",
+        "user_not_found": "No account found with this email address.",
+        "incorrect_password": "Incorrect password. Please try again.",
+        "generic_error": "Invalid email or password."
     },
     "signup": {
         "title": "Create Your Samagra360 Account",
@@ -92,7 +95,9 @@
             "low_stock_threshold": "Minimum Stock",
             "barcode": "Barcode*",
             "expiry": "Expiry Date*",
-            "barcode_length_error": "Barcode must be an 8-13 digit number."
+            "barcode_length_error": "Barcode must be an 8-13 digit number.",
+            "product_name_exists": "A product with this name already exists.",
+            "barcode_exists": "This barcode is already assigned to another product."
         },
         "categories": {
             "select": "Select a category...",

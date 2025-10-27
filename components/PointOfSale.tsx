@@ -6,7 +6,7 @@ import { ShoppingCartIcon, TrashIcon, PlusCircleIcon } from './icons/Icons';
 import ReceiptModal from './ui/ReceiptModal';
 import Modal from './ui/Modal';
 
-const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User }> = ({ products, addSale, currentUser }) => {
+const PointOfSale: React.FC<InventoryHook & { currentUser: User }> = ({ products, addSale, currentUser }) => {
   const { t } = useTranslation();
   const [cart, setCart] = useState<SaleItem[]>([]);
   const [barcodeInput, setBarcodeInput] = useState('');

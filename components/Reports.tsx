@@ -8,7 +8,6 @@ type Period = 'week' | 'month' | 'year';
 
 const Reports: React.FC<InventoryHook> = ({ sales }) => {
     const { t } = useTranslation();
-    // FIX: Renamed state variable to avoid shadowing and fix comparison logic.
     const [activePeriod, setActivePeriod] = useState<Period>('week');
 
     const reportData = useMemo(() => {

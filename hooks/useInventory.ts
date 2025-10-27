@@ -110,13 +110,36 @@ const useInventory = (userId: string | null): InventoryHook => {
     }
   }, [sales, userId, loading]);
 
-  const addProduct = (productData: Omit<Product, 'id'>) => {
-    const newProduct: Product = { ...productData, id: uuidv4() };
+  const addProduct = (productData: Omit<Product, 'id'>): { success: boolean; error?: string } => {
+    const trimmedName = productData.name.trim();
+    const trimmedBarcode = productData.barcode.trim();
+
+    if (products.some(p => p.name.toLowerCase() === trimmedName.toLowerCase())) {
+        return { success: false, error: 'product_name_exists' };
+    }
+    if (products.some(p => p.barcode === trimmedBarcode)) {
+        return { success: false, error: 'barcode_exists' };
+    }
+
+    const newProduct: Product = { ...productData, name: trimmedName, barcode: trimmedBarcode, id: uuidv4() };
     setProducts(prev => [...prev, newProduct]);
+    return { success: true };
   };
 
-  const updateProduct = (updatedProduct: Product) => {
-    setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+  const updateProduct = (updatedProduct: Product): { success: boolean; error?: string } => {
+    const trimmedName = updatedProduct.name.trim();
+    const trimmedBarcode = updatedProduct.barcode.trim();
+
+    if (products.some(p => p.id !== updatedProduct.id && p.name.toLowerCase() === trimmedName.toLowerCase())) {
+        return { success: false, error: 'product_name_exists' };
+    }
+    if (products.some(p => p.id !== updatedProduct.id && p.barcode === trimmedBarcode)) {
+        return { success: false, error: 'barcode_exists' };
+    }
+    
+    const finalProduct = { ...updatedProduct, name: trimmedName, barcode: trimmedBarcode };
+    setProducts(prev => prev.map(p => p.id === finalProduct.id ? finalProduct : p));
+    return { success: true };
   };
 
   const deleteProduct = (productId: string) => {
@@ -202,7 +225,7 @@ const useInventory = (userId: string | null): InventoryHook => {
     }
   };
 
-  return { products, sales, addProduct, updateProduct, deleteProduct, addSale, loading, clearSalesData, resetDashboardRevenue, revenueResetTimestamp };
+  return { products, sales, addProduct, updateProduct, deleteProduct, addSale, clearSalesData, resetDashboardRevenue, revenueResetTimestamp };
 };
 
 export default useInventory;

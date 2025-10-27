@@ -47,8 +47,8 @@ export type View = 'dashboard' | 'products' | 'pos' | 'reports' | 'settings';
 export interface InventoryHook {
   products: Product[];
   sales: Sale[];
-  addProduct: (product: Omit<Product, 'id'>) => void;
-  updateProduct: (product: Product) => void;
+  addProduct: (product: Omit<Product, 'id'>) => { success: boolean; error?: string };
+  updateProduct: (product: Product) => { success: boolean; error?: string };
   deleteProduct: (productId: string) => void;
   addSale: (
     items: SaleItem[], 
@@ -57,7 +57,6 @@ export interface InventoryHook {
     total: number, 
     discount?: { value: number; type: 'percentage' | 'fixed'; amount: number }
   ) => Sale;
-  loading: boolean;
   clearSalesData: () => void;
   resetDashboardRevenue: () => void;
   revenueResetTimestamp: string | null;

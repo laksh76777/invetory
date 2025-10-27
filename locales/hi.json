@@ -14,7 +14,10 @@
         "login_button": "लॉगिन करें",
         "no_account": "खाता नहीं है?",
         "signup_link": "साइन अप करें",
-        "remember_me": "मुझे याद रखें"
+        "remember_me": "मुझे याद रखें",
+        "user_not_found": "इस ईमेल पते से कोई खाता नहीं मिला।",
+        "incorrect_password": "गलत पासवर्ड। कृपया पुन: प्रयास करें।",
+        "generic_error": "अमान्य ईमेल या पासवर्ड।"
     },
     "signup": {
         "title": "अपना समग्र360 खाता बनाएं",
@@ -92,7 +95,9 @@
             "low_stock_threshold": "न्यूनतम स्टॉक",
             "barcode": "बारकोड*",
             "expiry": "समाप्ति तिथि*",
-            "barcode_length_error": "बारकोड 8-13 अंकों का नंबर होना चाहिए।"
+            "barcode_length_error": "बारकोड 8-13 अंकों का नंबर होना चाहिए।",
+            "product_name_exists": "इस नाम का उत्पाद पहले से मौजूद है।",
+            "barcode_exists": "यह बारकोड पहले से ही दूसरे उत्पाद को सौंपा गया है।"
         },
         "categories": {
             "select": "एक श्रेणी चुनें...",

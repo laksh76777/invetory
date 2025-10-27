@@ -14,8 +14,10 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const result = login(email, password, rememberMe);
-    if (!result.success) {
-      setError(result.error || 'An unknown error occurred.');
+    if (!result.success && result.error) {
+      // Map error codes to translation keys
+      const errorKey = `login.${result.error}`;
+      setError(t(errorKey));
     }
   };
 

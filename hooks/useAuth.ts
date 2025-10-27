@@ -29,10 +29,11 @@ const saveUsersDatabase = (users: Record<string, any>) => {
 
 const seedDemoUser = () => {
     const users = getUsersDatabase();
-    if (!users['demo@example.com']) {
-        users['demo@example.com'] = {
+    const demoEmail = 'demo@example.com';
+    if (!users[demoEmail]) {
+        users[demoEmail] = {
             id: 'user-1',
-            email: 'demo@example.com',
+            email: demoEmail,
             password: 'password123', // In a real app, this would be hashed
             name: 'Alex Doe',
             shopName: 'Alex\'s Corner Shop',
@@ -76,11 +77,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   });
 
   const login = (email: string, pass: string, rememberMe: boolean) => {
+    const normalizedEmail = email.toLowerCase().trim();
     const users = getUsersDatabase();
-    const userData = users[email];
+    const userData = users[normalizedEmail];
 
-    if (userData && userData.password === pass) {
-      const user: User = {
+    if (!userData) {
+      return { success: false, error: 'user_not_found' };
+    }
+    
+    if (userData.password !== pass) {
+        return { success: false, error: 'incorrect_password' };
+    }
+
+    const user: User = {
         id: userData.id,
         email: userData.email,
         name: userData.name,
@@ -90,36 +99,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         phoneNumber: userData.phoneNumber,
         gstNumber: userData.gstNumber,
         taxRate: userData.taxRate,
-      };
+    };
 
-      // Clear any previous session to prevent conflicts.
-      localStorage.removeItem('currentUser');
-      sessionStorage.removeItem('currentUser');
+    // Clear any previous session to prevent conflicts.
+    localStorage.removeItem('currentUser');
+    sessionStorage.removeItem('currentUser');
 
-      // Persist session based on "Remember Me" choice.
-      if (rememberMe) {
+    // Persist session based on "Remember Me" choice.
+    if (rememberMe) {
         localStorage.setItem('currentUser', JSON.stringify(user));
-      } else {
+    } else {
         sessionStorage.setItem('currentUser', JSON.stringify(user));
-      }
-      
-      setCurrentUser(user);
-      return { success: true };
     }
-    return { success: false, error: 'Invalid email or password.' };
+    
+    setCurrentUser(user);
+    return { success: true };
   };
 
   const signup = (details: Omit<User, 'id'> & {password: string}) => {
+    const normalizedEmail = details.email.toLowerCase().trim();
     const users = getUsersDatabase();
-    // Robust check for existing users.
-    if (users[details.email]) {
+    
+    if (users[normalizedEmail]) {
         return { success: false, error: 'This email is already registered. Please log in instead.' };
     }
     
     const newUserId = uuidv4();
     const newUserForDb = {
         id: newUserId,
-        email: details.email,
+        email: normalizedEmail,
         password: details.password, // In a real app, this MUST be hashed!
         name: details.name,
         shopName: details.shopName,
@@ -129,13 +137,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         gstNumber: details.gstNumber,
         taxRate: details.taxRate,
     };
-    users[details.email] = newUserForDb;
+    users[normalizedEmail] = newUserForDb;
     saveUsersDatabase(users);
 
     // Automatically log in the new user (session only for new signups)
     const userForState: User = {
       id: newUserId,
-      email: details.email,
+      email: normalizedEmail,
       name: details.name,
       shopName: details.shopName,
       shopLogo: details.shopLogo,
@@ -160,7 +168,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const updateUser = (details: Partial<User>) => {
     if (!currentUser) return;
 
-    const updatedUser = { ...currentUser, ...details };
+    // Normalize email if it's part of the update, though this is unlikely/discouraged
+    const normalizedDetails = details.email 
+        ? { ...details, email: details.email.toLowerCase().trim() }
+        : details;
+
+    const updatedUser = { ...currentUser, ...normalizedDetails };
     setCurrentUser(updatedUser);
 
     // Persist the updated user session to the correct storage.
@@ -172,18 +185,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
     // Also update the master user record in the main database.
     const users = getUsersDatabase();
-    const userRecord = users[currentUser.email];
+    const userRecord = users[currentUser.email]; // Find by old email
     if(userRecord) {
+        const oldEmail = currentUser.email;
         // Ensure password isn't overwritten if not provided in details
         const password = userRecord.password;
-        const updatedDetails = { ...userRecord, ...details, password };
+        const updatedDetailsForDb = { ...userRecord, ...normalizedDetails, password };
 
         // Handle logo removal
-        if ('shopLogo' in details && details.shopLogo === undefined) {
-            delete updatedDetails.shopLogo;
+        if ('shopLogo' in normalizedDetails && normalizedDetails.shopLogo === undefined) {
+            delete updatedDetailsForDb.shopLogo;
         }
 
-        users[currentUser.email] = updatedDetails;
+        // If email has changed, we need to update the key in the database
+        const newEmail = updatedDetailsForDb.email;
+        if (oldEmail !== newEmail) {
+            delete users[oldEmail];
+        }
+        users[newEmail] = updatedDetailsForDb;
         saveUsersDatabase(users);
     }
   };

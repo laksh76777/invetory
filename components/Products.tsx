@@ -95,14 +95,8 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
         <ProductFormModal 
           isOpen={isModalOpen}
           onClose={closeModal}
-          onSave={(productData) => {
-            if (editingProduct) {
-              updateProduct({ ...editingProduct, ...productData });
-            } else {
-              addProduct(productData);
-            }
-            closeModal();
-          }}
+          addProduct={addProduct}
+          updateProduct={updateProduct}
           product={editingProduct}
         />
       )}
@@ -114,9 +108,10 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
 const ProductFormModal: React.FC<{
   isOpen: boolean;
   onClose: () => void;
-  onSave: (product: Omit<Product, 'id'>) => void;
+  addProduct: (product: Omit<Product, 'id'>) => { success: boolean; error?: string };
+  updateProduct: (product: Product) => { success: boolean; error?: string };
   product: Product | null;
-}> = ({ isOpen, onClose, onSave, product }) => {
+}> = ({ isOpen, onClose, addProduct, updateProduct, product }) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState<Omit<Product, 'id'>>({
     name: '',
@@ -128,6 +123,7 @@ const ProductFormModal: React.FC<{
     barcode: '',
   });
   const [barcodeError, setBarcodeError] = useState('');
+  const [formError, setFormError] = useState('');
 
   const categories = [
     'Grocery', 'Dairy', 'Bakery', 'Beverages', 'Snacks', 
@@ -146,10 +142,12 @@ const ProductFormModal: React.FC<{
       barcode: product?.barcode || '',
     });
     setBarcodeError('');
+    setFormError('');
   }, [product]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
+    setFormError(''); // Clear server-side validation error on any input change
     
     if (name === 'barcode') {
         const numericValue = value.replace(/[^0-9]/g, '');
@@ -182,11 +180,29 @@ const ProductFormModal: React.FC<{
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (formData.barcode.length < 8 || formData.barcode.length > 13) {
+    if (formData.barcode.length > 0 && (formData.barcode.length < 8 || formData.barcode.length > 13)) {
         setBarcodeError(t('products.form.barcode_length_error'));
         return;
     }
-    onSave(formData);
+
+    const productData = {
+        ...formData,
+        name: formData.name.trim(),
+        barcode: formData.barcode.trim(),
+    };
+
+    let result;
+    if (product) { // Editing existing product
+        result = updateProduct({ ...product, ...productData });
+    } else { // Adding new product
+        result = addProduct(productData);
+    }
+    
+    if (result.success) {
+        onClose();
+    } else if (result.error) {
+        setFormError(t(`products.form.${result.error}`));
+    }
   };
   
   const formInputStyle = "mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 transition";
@@ -249,6 +265,8 @@ const ProductFormModal: React.FC<{
             <input type="date" name="expiryDate" id="expiryDate" value={formData.expiryDate} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} required />
           </div>
         </div>
+        
+        {formError && <p className="text-red-500 text-sm text-center bg-red-100 dark:bg-red-900/30 p-3 rounded-lg">{formError}</p>}
 
         <div className="pt-4 flex justify-end gap-4">
           <Button type="button" variant="secondary" onClick={onClose}>{t('common.cancel')}</Button>
