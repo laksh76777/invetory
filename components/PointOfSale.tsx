@@ -4,6 +4,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import Button from './ui/Button';
 import { ShoppingCartIcon, TrashIcon, PlusCircleIcon } from './icons/Icons';
 import ReceiptModal from './ui/ReceiptModal';
+import Modal from './ui/Modal';
 
 const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User }> = ({ products, addSale, currentUser }) => {
   const { t } = useTranslation();
@@ -15,6 +16,9 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
   const [lastAddedProductId, setLastAddedProductId] = useState<string | null>(null);
   const [discount, setDiscount] = useState('');
   const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>('fixed');
+  const [errorModalMessage, setErrorModalMessage] = useState<string | null>(null);
+  const [quantityErrorId, setQuantityErrorId] = useState<string | null>(null);
+
 
   const taxRate = currentUser.taxRate || 0;
 
@@ -47,8 +51,18 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
     }
 
     if (product.stock <= 0) {
-      setScanError(t('pos.product_out_of_stock_alert'));
+      setErrorModalMessage(t('pos.out_of_stock_message').replace('{productName}', product.name));
       return false;
+    }
+
+    const itemInCart = cart.find(item => item.productId === product.id);
+    if (itemInCart && itemInCart.quantity >= product.stock) {
+        setErrorModalMessage(
+            t('pos.max_stock_in_cart_message')
+                .replace('{productName}', product.name)
+                .replace('{quantity}', itemInCart.quantity.toString())
+        );
+        return false;
     }
 
     addToCart(product);
@@ -74,8 +88,11 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
       setCart(prevCart => prevCart.map(item =>
         item.productId === productId ? { ...item, quantity: newQuantity } : item
       ));
+    } else {
+      // Give visual feedback that stock limit is reached
+      setQuantityErrorId(productId);
+      setTimeout(() => setQuantityErrorId(null), 600); // Animation duration
     }
-    // Do nothing if new quantity exceeds stock
   };
 
   const { subtotal, discountAmount, subtotalAfterDiscount, taxAmount, total } = useMemo(() => {
@@ -115,9 +132,17 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
         amount: discountAmount,
     } : undefined;
 
-    const completedSale = addSale(cart, subtotal, taxAmount, total, discountDetails);
-    setLastSale(completedSale);
-    setIsReceiptModalOpen(true);
+    try {
+        const completedSale = addSale(cart, subtotal, taxAmount, total, discountDetails);
+        setLastSale(completedSale);
+        setIsReceiptModalOpen(true);
+    } catch (error) {
+        if (error instanceof Error) {
+            setErrorModalMessage(error.message);
+        } else {
+            setErrorModalMessage('An unexpected error occurred while completing the sale.');
+        }
+    }
   };
   
   const handleCloseReceipt = () => {
@@ -144,6 +169,15 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
         }
         .animate-highlight {
           animation: highlight-item 1.5s ease-out;
+        }
+        @keyframes shake {
+          10%, 90% { transform: translate3d(-1px, 0, 0); }
+          20%, 80% { transform: translate3d(2px, 0, 0); }
+          30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+          40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+        .animate-shake {
+          animation: shake 0.6s cubic-bezier(.36,.07,.19,.97) both;
         }
       `}</style>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
@@ -183,14 +217,14 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
               ) : (
                   <ul className="space-y-4">
                       {cart.map(item => (
-                          <li key={item.productId} className={`flex items-center justify-between p-2 -mx-2 rounded-lg transition-colors ${item.productId === lastAddedProductId ? 'animate-highlight' : ''}`}>
+                          <li key={item.productId} className={`flex items-center justify-between p-2 -mx-2 rounded-lg transition-colors ${item.productId === lastAddedProductId ? 'animate-highlight' : ''} ${item.productId === quantityErrorId ? 'animate-shake' : ''}`}>
                               <div className="flex-1 pr-2">
                                   <p className="font-semibold text-slate-900 dark:text-white truncate">{item.name}</p>
                                   <p className="text-sm text-slate-500 dark:text-slate-400">₹{item.price.toFixed(2)}</p>
                               </div>
                               <div className="flex items-center gap-1 sm:gap-2">
                                   <button onClick={() => updateQuantity(item.productId, item.quantity - 1)} className="h-8 w-8 flex items-center justify-center border border-slate-300 dark:border-slate-600 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition">-</button>
-                                  <span className="w-6 text-center">{item.quantity}</span>
+                                  <span className={`w-8 text-center font-semibold ${item.productId === quantityErrorId ? 'text-red-500' : ''}`}>{item.quantity}</span>
                                   <button onClick={() => updateQuantity(item.productId, item.quantity + 1)} className="h-8 w-8 flex items-center justify-center border border-slate-300 dark:border-slate-600 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition">+</button>
                                   <button onClick={() => updateQuantity(item.productId, 0)} className="text-slate-500 hover:text-red-500 ml-1 sm:ml-2 transition p-1"><TrashIcon className="w-5 h-5" /></button>
                               </div>
@@ -254,6 +288,18 @@ const PointOfSale: React.FC<Omit<InventoryHook, 'loading'> & { currentUser: User
               sale={lastSale}
               user={currentUser}
           />
+      )}
+      {errorModalMessage && (
+          <Modal
+              isOpen={!!errorModalMessage}
+              onClose={() => setErrorModalMessage(null)}
+              title={t('pos.modal_error_title')}
+          >
+              <div className="text-center">
+                  <p className="text-slate-700 dark:text-slate-300 mb-6">{errorModalMessage}</p>
+                  <Button onClick={() => setErrorModalMessage(null)}>OK</Button>
+              </div>
+          </Modal>
       )}
     </>
   );

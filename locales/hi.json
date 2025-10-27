@@ -117,6 +117,9 @@
         "scan_barcode_button": "स्कैन करें",
         "product_not_found_alert": "इस बारकोड वाला उत्पाद नहीं मिला।",
         "product_out_of_stock_alert": "यह उत्पाद वर्तमान में स्टॉक में नहीं है।",
+        "out_of_stock_message": "\"{productName}\" स्टॉक में नहीं है।",
+        "max_stock_in_cart_message": "\"{productName}\" के लिए और स्टॉक नहीं है। आपके कार्ट में पहले से ही {quantity} हैं।",
+        "modal_error_title": "त्रुटि",
         "scan_or_enter_barcode": "बारकोड स्कैन या दर्ज करें",
         "main_instruction": "कार्ट में जोड़ने के लिए किसी उत्पाद का बारकोड स्कैन करें या उसे मैन्युअल रूप से दर्ज करें।",
         "receipt": {

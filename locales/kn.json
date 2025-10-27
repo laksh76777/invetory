@@ -117,6 +117,9 @@
         "scan_barcode_button": "ಸ್ಕ್ಯಾನ್ ಮಾಡಿ",
         "product_not_found_alert": "ಈ ಬಾರ್‌ಕೋಡ್ ಹೊಂದಿರುವ ಉತ್ಪನ್ನ ಕಂಡುಬಂದಿಲ್ಲ.",
         "product_out_of_stock_alert": "ಈ ಉತ್ಪನ್ನವು ಪ್ರಸ್ತುತ ಸ್ಟಾಕ್‌ನಿಂದ ಹೊರಗಿದೆ.",
+        "out_of_stock_message": "\"{productName}\" ಸ್ಟಾಕ್‌ನಲ್ಲಿ ಇಲ್ಲ.",
+        "max_stock_in_cart_message": "\"{productName}\" ಗಾಗಿ ಹೆಚ್ಚಿನ ಸ್ಟಾಕ್ ಇಲ್ಲ. ನಿಮ್ಮ ಕಾರ್ಟ್‌ನಲ್ಲಿ ಈಗಾಗಲೇ {quantity} ಇದೆ.",
+        "modal_error_title": "ದೋಷ",
         "scan_or_enter_barcode": "ಬಾರ್‌ಕೋಡ್ ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಅಥವಾ ನಮೂದಿಸಿ",
         "main_instruction": "ಕಾರ್ಟ್‌ಗೆ ಸೇರಿಸಲು ಉತ್ಪನ್ನದ ಬಾರ್‌ಕೋಡ್ ಅನ್ನು ಸ್ಕ್ಯಾನ್ ಮಾಡಿ ಅಥವಾ ಅದನ್ನು ಹಸ್ತಚಾಲಿತವಾಗಿ ನಮೂದಿಸಿ.",
         "receipt": {

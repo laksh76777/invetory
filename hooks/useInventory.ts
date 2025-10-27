@@ -125,6 +125,19 @@ const useInventory = (userId: string | null): InventoryHook => {
       throw new Error("User not logged in");
     }
     
+    // Final validation check before processing the sale
+    const insufficientStockItems: string[] = [];
+    items.forEach(saleItem => {
+        const product = products.find(p => p.id === saleItem.productId);
+        if (!product || product.stock < saleItem.quantity) {
+            insufficientStockItems.push(product?.name || saleItem.name);
+        }
+    });
+
+    if (insufficientStockItems.length > 0) {
+        throw new Error(`Sale cannot be completed. Insufficient stock for: ${insufficientStockItems.join(', ')}`);
+    }
+
     // Create new sale record
     const newSale: Sale = {
       id: uuidv4(),

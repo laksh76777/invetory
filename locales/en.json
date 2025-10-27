@@ -117,6 +117,9 @@
         "scan_barcode_button": "Scan",
         "product_not_found_alert": "Product with this barcode not found.",
         "product_out_of_stock_alert": "This product is currently out of stock.",
+        "out_of_stock_message": "\"{productName}\" is out of stock.",
+        "max_stock_in_cart_message": "No more stock for \"{productName}\". You already have {quantity} in cart.",
+        "modal_error_title": "Error",
         "scan_or_enter_barcode": "Scan or Enter Barcode",
         "main_instruction": "Scan a product's barcode or enter it manually to add it to the cart.",
         "receipt": {
