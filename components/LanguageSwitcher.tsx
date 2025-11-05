@@ -1,8 +1,7 @@
 import React from 'react';
-import { useTranslation } from '../hooks/useTranslation';
 
 const LanguageSwitcher: React.FC = () => {
-  const { language, changeLanguage } = useTranslation();
+  const language = 'en'; // Hardcode to English for styling, functionality disconnected.
 
   const languages = [
     { code: 'en', name: 'English' },
@@ -16,7 +15,6 @@ const LanguageSwitcher: React.FC = () => {
         {languages.map(lang => (
           <button
             key={lang.code}
-            onClick={() => changeLanguage(lang.code)}
             className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
               language === lang.code
                 ? 'bg-primary-600 text-white'

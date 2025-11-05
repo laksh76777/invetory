@@ -8,6 +8,7 @@ import {
   PosIcon,
   ReportsIcon,
   SettingsIcon,
+  AiIcon,
 } from './icons/Icons';
 
 interface SidebarProps {
@@ -25,6 +26,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentView, setCurrentView }) => {
     { view: 'products', label: t('sidebar.products'), icon: <ProductsIcon className="w-6 h-6 flex-shrink-0" /> },
     { view: 'pos', label: t('sidebar.pos'), icon: <PosIcon className="w-6 h-6 flex-shrink-0" /> },
     { view: 'reports', label: t('sidebar.reports'), icon: <ReportsIcon className="w-6 h-6 flex-shrink-0" /> },
+    { view: 'ai_chatbot', label: t('sidebar.ai_chatbot'), icon: <AiIcon className="w-6 h-6 flex-shrink-0" /> },
     { view: 'settings', label: t('sidebar.settings'), icon: <SettingsIcon className="w-6 h-6 flex-shrink-0" /> },
   ];
 

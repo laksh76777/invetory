@@ -69,10 +69,20 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
             <tbody>
               {filteredProducts.map(product => (
                 <tr key={product.id} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-700/50">
-                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">{product.name}</td>
+                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      {product.name}
+                      {product.stock <= product.lowStockThreshold && (
+                        <span 
+                          className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"
+                          title={t('dashboard.low_stock_alerts')}
+                        ></span>
+                      )}
+                    </div>
+                  </td>
                   <td className="px-6 py-4">{product.category}</td>
                   <td className="px-6 py-4">₹{product.price.toFixed(2)}</td>
-                  <td className={`px-6 py-4 font-semibold ${product.stock <= product.lowStockThreshold ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}`}>
+                  <td className={`px-6 py-4 font-bold ${product.stock <= product.lowStockThreshold ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}`}>
                     {Math.max(0, product.stock)}
                   </td>
                   <td className="px-6 py-4 font-mono text-slate-600 dark:text-slate-400">{product.barcode}</td>

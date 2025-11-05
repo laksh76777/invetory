@@ -6,6 +6,7 @@ import { useTranslation } from '../hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
 import Button from './ui/Button';
 import Modal from './ui/Modal';
+import AiSuggestionBox from './AiSuggestionBox';
 
 
 interface DashboardProps extends InventoryHook {
@@ -206,6 +207,11 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
             )}
           </div>
         </div>
+      </div>
+
+      {/* AI Suggestion Box */}
+      <div className="mt-8">
+        <AiSuggestionBox products={products} sales={sales} />
       </div>
 
       {isConfirmModalOpen && (

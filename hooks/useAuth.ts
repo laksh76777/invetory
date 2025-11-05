@@ -25,10 +25,12 @@ const saveUsersDatabase = (users: Record<string, any>) => {
 };
 
 
-// --- Initial Seeding for Demo User ---
+// --- Initial Seeding for Demo Users ---
 
-const seedDemoUser = () => {
+const seedInitialUsers = () => {
     const users = getUsersDatabase();
+    
+    // Standard Demo User
     const demoEmail = 'demo@example.com';
     if (!users[demoEmail]) {
         users[demoEmail] = {
@@ -43,10 +45,28 @@ const seedDemoUser = () => {
             gstNumber: '27ABCDE1234F1Z5',
             taxRate: 5, // 5%
         };
-        saveUsersDatabase(users);
     }
+
+    // "Kaggle" Data Analysis User
+    const kaggleEmail = 'laksh@gmail.com';
+    if (!users[kaggleEmail]) {
+        users[kaggleEmail] = {
+            id: 'user-kaggle', // Special ID to identify this user
+            email: kaggleEmail,
+            password: '123456',
+            name: 'Laksh',
+            shopName: 'Laksh\'s Grocery Analytics',
+            shopLogo: `https://i.pravatar.cc/150?u=user-kaggle`,
+            shopAddress: '456 Kaggle Drive, Data City, 560001',
+            phoneNumber: '9123456780',
+            gstNumber: '29LMNOP5678G1Z9',
+            taxRate: 5,
+        };
+    }
+
+    saveUsersDatabase(users);
 };
-seedDemoUser();
+seedInitialUsers();
 
 
 // --- Auth Context and Provider ---

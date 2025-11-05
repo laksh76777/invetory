@@ -44,6 +44,14 @@ export const SettingsIcon: React.FC<{ className?: string }> = ({ className }) =>
   </svg>
 );
 
+export const AiIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17.5 19H9a7 7 0 1 1 6.33-10.5"/>
+    <path d="M12 12v4"/>
+    <path d="M12 8v.01"/>
+  </svg>
+);
+
 export const LogoutIcon: React.FC<{ className?: string }> = ({ className }) => (
   <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
@@ -116,6 +124,14 @@ export const ResetIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M21 13.5c0 4.69-3.81 8.5-8.5 8.5S4 18.19 4 13.5 7.81 5 12.5 5c2.34 0 4.47.94 6 2.5"/>
         <path d="M18 9v-4h-4"/>
+    </svg>
+);
+
+export const SparklesIcon: React.FC<{ className?: string }> = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m12 3-1.9 4.2-4.2 1.9 4.2 1.9 1.9 4.2 1.9-4.2 4.2-1.9-4.2-1.9Z"/>
+        <path d="M5 13 3 17l4 2 2-4-4-2"/>
+        <path d="M19 13l2 4-4 2-2-4 4-2"/>
     </svg>
 );
 

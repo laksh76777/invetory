@@ -42,7 +42,7 @@ export interface Sale {
   discountValue?: number;
 }
 
-export type View = 'dashboard' | 'products' | 'pos' | 'reports' | 'settings';
+export type View = 'dashboard' | 'products' | 'pos' | 'reports' | 'settings' | 'ai_chatbot';
 
 export interface InventoryHook {
   products: Product[];

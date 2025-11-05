@@ -11,6 +11,7 @@ import Products from './components/Products';
 import PointOfSale from './components/PointOfSale';
 import Reports from './components/Reports';
 import Settings from './components/Settings';
+import AiChatbot from './components/AiChatbot';
 import Footer from './components/Footer';
 
 const App: React.FC = () => {
@@ -47,6 +48,8 @@ const App: React.FC = () => {
         return <PointOfSale {...inventory} currentUser={currentUser} />;
       case 'reports':
         return <Reports {...inventory} />;
+      case 'ai_chatbot':
+        return <AiChatbot {...inventory} />;
       case 'settings':
         return <Settings showRevenueCard={showRevenueCard} onToggleRevenueCard={toggleRevenueCard} clearSalesData={inventory.clearSalesData} />;
       default:

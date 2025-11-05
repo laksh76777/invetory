@@ -40,7 +40,8 @@
         "products": "Products",
         "pos": "Point of Sale",
         "reports": "Reports",
-        "settings": "Settings"
+        "settings": "Settings",
+        "ai_chatbot": "AI Chatbot"
     },
     "dashboard": {
         "title": "Dashboard",
@@ -198,5 +199,19 @@
             "body": "Are you sure you want to permanently delete all sales data? Your reports will be empty and this action cannot be reversed.",
             "confirm_button": "Yes, Delete Data"
         }
+    },
+    "ai_chatbot": {
+        "title": "AI Inventory Analyst",
+        "description": "Ask me anything about your products, sales, and stock.",
+        "initial_message": "Hello! I'm your AI-powered inventory analyst. How can I help you analyze your shop's data today? For example, you could ask 'Which products are selling the best?' or 'Summarize my sales from last week'.",
+        "placeholder": "Ask a question about your inventory...",
+        "error": "Sorry, I encountered an error. Please try again."
+    },
+    "ai_suggestion_box": {
+        "title": "AI-Powered Advice",
+        "description": "Get smart suggestions based on your current inventory and sales data.",
+        "button": "Generate Insights",
+        "loading": "Analyzing your data...",
+        "error": "Could not generate advice. Please try again later."
     }
 }
