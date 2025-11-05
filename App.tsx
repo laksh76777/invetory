@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from './hooks/useAuth';
 import useInventory from './hooks/useInventory';
-import type { View } from './types';
+import type { View, SaleItem } from './types';
 
 import LoginPage from './components/LoginPage';
 import SignUpPage from './components/SignUpPage';
@@ -24,6 +24,18 @@ const App: React.FC = () => {
     return saved !== null ? JSON.parse(saved) : true;
   });
 
+  // --- POS State Lifted Up ---
+  const [posCart, setPosCart] = useState<SaleItem[]>([]);
+  const [posDiscount, setPosDiscount] = useState('');
+  const [posDiscountType, setPosDiscountType] = useState<'percentage' | 'fixed'>('fixed');
+  
+  const clearPosCart = () => {
+      setPosCart([]);
+      setPosDiscount('');
+      setPosDiscountType('fixed');
+  };
+  // --- End of Lifted State ---
+
   const toggleRevenueCard = () => {
     setShowRevenueCard(prev => {
         const newState = !prev;
@@ -45,7 +57,17 @@ const App: React.FC = () => {
       case 'products':
         return <Products {...inventory} />;
       case 'pos':
-        return <PointOfSale {...inventory} currentUser={currentUser} />;
+        return <PointOfSale 
+                  {...inventory} 
+                  currentUser={currentUser}
+                  cart={posCart}
+                  setCart={setPosCart}
+                  discount={posDiscount}
+                  setDiscount={setPosDiscount}
+                  discountType={posDiscountType}
+                  setDiscountType={setPosDiscountType}
+                  clearCart={clearPosCart}
+                />;
       case 'reports':
         return <Reports {...inventory} />;
       case 'ai_chatbot':

@@ -1,0 +1,148 @@
+import React, { useState } from 'react';
+import { GoogleGenAI } from "@google/genai";
+import { useTranslation } from '../hooks/useTranslation';
+import type { Product, Sale } from '../types';
+import { LightbulbIcon } from './icons/Icons';
+import Button from './ui/Button';
+
+interface ProactiveAiSuggestionsProps {
+  products: Product[];
+  sales: Sale[];
+}
+
+const getUpcomingFestivals = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    // Approximate dates for major Indian festivals
+    const festivals = [
+        { name: 'Raksha Bandhan', date: new Date(year, 7, 19) },
+        { name: 'Janmashtami', date: new Date(year, 7, 26) },
+        { name: 'Ganesh Chaturthi', date: new Date(year, 8, 7) },
+        { name: 'Navaratri', date: new Date(year, 9, 3) }, // Start date
+        { name: 'Dussehra', date: new Date(year, 9, 12) },
+        { name: 'Diwali', date: new Date(year, 10, 1) },
+        { name: 'Christmas', date: new Date(year, 11, 25) },
+        // Festivals for next year if current date is past them
+        { name: 'Makar Sankranti/Pongal', date: new Date(year + 1, 0, 14) },
+        { name: 'Holi', date: new Date(year + 1, 2, 14) },
+        { name: 'Eid al-Fitr', date: new Date(year + 1, 3, 1) }, // Approximate, based on lunar calendar
+    ];
+
+    const upcoming = festivals.filter(f => f.date > now && f.date.getTime() - now.getTime() < 60 * 24 * 60 * 60 * 1000); // within next 60 days
+    return upcoming.map(f => f.name).join(', ');
+};
+
+const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ products, sales }) => {
+  const { t } = useTranslation();
+  const [suggestions, setSuggestions] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const generateSuggestions = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuggestions(null);
+
+    try {
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+      const upcomingFestivals = getUpcomingFestivals();
+
+      const prompt = `
+        You are an expert retail analyst for an Indian grocery store. Your goal is to provide proactive, data-driven advice.
+
+        CONTEXT:
+        - Today's Date: ${new Date().toISOString()}
+        - Upcoming Major Indian Festivals (next 60 days): ${upcomingFestivals || 'None in the immediate future'}
+        - All monetary values are in Indian Rupees (₹).
+
+        TASK:
+        Analyze the provided INVENTORY DATA and one year of SALES HISTORY. Based on this, provide 3-5 concrete, actionable suggestions for the shop owner. For each suggestion, provide a clear "Action" and a "Reasoning".
+
+        ANALYSIS CHECKLIST:
+        1.  **Seasonal Demand:** Given the upcoming festivals, what products (e.g., sweets, special grains, ghee, oil, dry fruits) should be stocked up?
+        2.  **Historical Trends:** Compare sales from the last 30-60 days with the same period from LAST YEAR. Identify products with significant sales growth or decline.
+        3.  **Restock Alerts:** Find popular, fast-moving products that are currently low in stock. Recommend a specific quantity to order based on their sales velocity.
+        4.  **Slow-Moving Stock:** Identify products with high inventory but very low sales in the past 90 days. Suggest a strategy (e.g., 'Offer a 10% discount' or 'Bundle with a popular item').
+
+        OUTPUT FORMAT:
+        Use Markdown for formatting. For each suggestion, use the following structure:
+        **Action:** [Your specific, quantifiable recommendation. E.g., "Restock 50kg of India Gate Basmati Rice."]
+        **Reasoning:** [Your data-backed explanation. E.g., "Sales for this item increased by 40% during the Diwali period last year, and current stock is only 20kg."]
+
+        ---
+        INVENTORY DATA:
+        ${JSON.stringify(products, null, 2)}
+        ---
+        SALES HISTORY (1 Year):
+        ${JSON.stringify(sales, null, 2)}
+      `;
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: prompt
+      });
+      
+      setSuggestions(response.text);
+
+    } catch (err) {
+      console.error(err);
+      setError(t('proactive_ai_suggestions.error'));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div className="text-center py-8">
+            <div role="status" className="flex flex-col items-center justify-center">
+                <svg aria-hidden="true" className="w-8 h-8 mr-2 text-slate-200 animate-spin dark:text-slate-600 fill-primary-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/><path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0492C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5424 39.6781 93.9676 39.0409Z" fill="currentFill"/></svg>
+                <span className="sr-only">Loading...</span>
+            </div>
+          <p className="mt-4 text-slate-500 dark:text-slate-400">{t('proactive_ai_suggestions.loading')}</p>
+        </div>
+      );
+    }
+    if (error) {
+      return <p className="text-red-500 text-center py-8">{error}</p>;
+    }
+    if (suggestions) {
+      // Simple Markdown-like rendering
+      return (
+        <div className="prose prose-sm dark:prose-invert max-w-none space-y-3">
+          {suggestions.split('**').map((part, index) => {
+              if (index % 2 === 1) { // It's bold text
+                  return <strong key={index}>{part}</strong>;
+              }
+              return part.split('\n').map((line, lineIndex) => (
+                <p key={`${index}-${lineIndex}`} className="my-1">{line.replace(/^\*/, '•')}</p>
+              ));
+          })}
+        </div>
+      );
+    }
+    return (
+      <div className="text-center py-8">
+        <p className="text-slate-500 dark:text-slate-400 mb-4">{t('proactive_ai_suggestions.description')}</p>
+        <Button onClick={generateSuggestions}>
+          <LightbulbIcon className="mr-2" />
+          {t('proactive_ai_suggestions.button')}
+        </Button>
+      </div>
+    );
+  };
+  
+  return (
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
+      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 p-6 border-b border-slate-200 dark:border-slate-700 flex items-center">
+        <LightbulbIcon className="mr-3 text-yellow-500" /> {t('proactive_ai_suggestions.title')}
+      </h2>
+      <div className="p-6">
+        {renderContent()}
+      </div>
+    </div>
+  );
+};
+
+export default ProactiveAiSuggestions;

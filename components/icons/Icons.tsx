@@ -135,6 +135,14 @@ export const SparklesIcon: React.FC<{ className?: string }> = ({ className }) =>
     </svg>
 );
 
+export const LightbulbIcon: React.FC<{ className?: string }> = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5C17.7 10.2 18 9 18 7.5c0-2.2-1.8-4-4-4-2.2 0-4 1.8-4 4 0 1.5.3 2.7 1.5 3.9.8.8 1.3 1.6 1.5 2.5"/>
+      <path d="M9 18h6"/>
+      <path d="M10 22h4"/>
+    </svg>
+);
+
 export const InstagramIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>

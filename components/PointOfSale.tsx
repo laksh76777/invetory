@@ -6,16 +6,35 @@ import { ShoppingCartIcon, TrashIcon, PlusCircleIcon } from './icons/Icons';
 import ReceiptModal from './ui/ReceiptModal';
 import Modal from './ui/Modal';
 
-const PointOfSale: React.FC<InventoryHook & { currentUser: User }> = ({ products, addSale, currentUser }) => {
+interface PointOfSaleProps extends InventoryHook {
+    currentUser: User;
+    cart: SaleItem[];
+    setCart: React.Dispatch<React.SetStateAction<SaleItem[]>>;
+    discount: string;
+    setDiscount: React.Dispatch<React.SetStateAction<string>>;
+    discountType: 'percentage' | 'fixed';
+    setDiscountType: React.Dispatch<React.SetStateAction<'percentage' | 'fixed'>>;
+    clearCart: () => void;
+}
+
+const PointOfSale: React.FC<PointOfSaleProps> = ({ 
+    products, 
+    addSale, 
+    currentUser, 
+    cart, 
+    setCart,
+    discount,
+    setDiscount,
+    discountType,
+    setDiscountType,
+    clearCart
+}) => {
   const { t } = useTranslation();
-  const [cart, setCart] = useState<SaleItem[]>([]);
   const [barcodeInput, setBarcodeInput] = useState('');
   const [scanError, setScanError] = useState('');
   const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
   const [lastSale, setLastSale] = useState<Sale | null>(null);
   const [lastAddedProductId, setLastAddedProductId] = useState<string | null>(null);
-  const [discount, setDiscount] = useState('');
-  const [discountType, setDiscountType] = useState<'percentage' | 'fixed'>('fixed');
   const [errorModalMessage, setErrorModalMessage] = useState<string | null>(null);
   const [quantityErrorId, setQuantityErrorId] = useState<string | null>(null);
 
@@ -148,8 +167,7 @@ const PointOfSale: React.FC<InventoryHook & { currentUser: User }> = ({ products
   const handleCloseReceipt = () => {
     setIsReceiptModalOpen(false);
     setLastSale(null);
-    setCart([]);
-    setDiscount('');
+    clearCart();
   }
 
   return (
@@ -206,9 +224,14 @@ const PointOfSale: React.FC<InventoryHook & { currentUser: User }> = ({ products
 
         {/* Cart */}
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 flex flex-col">
-          <h2 className="text-xl font-bold p-4 border-b border-slate-200 dark:border-slate-700 flex items-center text-slate-800 dark:text-slate-200">
-              <ShoppingCartIcon className="mr-3" /> {t('pos.cart_title')}
-          </h2>
+          <div className="flex justify-between items-center p-4 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold flex items-center text-slate-800 dark:text-slate-200">
+                <ShoppingCartIcon className="mr-3" /> {t('pos.cart_title')}
+            </h2>
+            <Button variant="secondary" onClick={clearCart} disabled={cart.length === 0} className="!px-3 !py-1.5 text-xs">
+                {t('pos.new_sale_button')}
+            </Button>
+          </div>
           <div className="flex-1 p-4 overflow-y-auto">
               {cart.length === 0 ? (
                   <div className="text-center py-10 h-full flex flex-col justify-center">

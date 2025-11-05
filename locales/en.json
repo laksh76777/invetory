@@ -136,6 +136,7 @@
         "modal_error_title": "Error",
         "scan_or_enter_barcode": "Scan or Enter Barcode",
         "main_instruction": "Scan a product's barcode or enter it manually to add it to the cart.",
+        "new_sale_button": "New Sale",
         "receipt": {
             "title": "Sale Receipt",
             "receipt_no": "Receipt No.",
@@ -213,5 +214,12 @@
         "button": "Generate Insights",
         "loading": "Analyzing your data...",
         "error": "Could not generate advice. Please try again later."
+    },
+    "proactive_ai_suggestions": {
+        "title": "Strategic AI Insights",
+        "description": "Get proactive advice based on historical data and upcoming events.",
+        "button": "Analyze & Suggest",
+        "loading": "Performing deep analysis...",
+        "error": "Could not generate suggestions. Please try again later."
     }
 }
