@@ -23,12 +23,15 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center"
-      style={{ backgroundImage: "url('https://storage.googleapis.com/aistudio-hosting/images/8e612330-d3b5-410a-9957-3f95b3d681f2.png')" }}
+      className="min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-no-repeat animate-[background-pan_15s_ease-in-out_infinite]"
+      style={{
+        backgroundImage: "linear-gradient(rgba(2, 6, 23, 0.5), rgba(2, 6, 23, 0.7)), url('https://storage.googleapis.com/aistudio-hosting/images/8e612330-d3b5-410a-9957-3f95b3d681f2.png')",
+        backgroundSize: '150% 150%',
+      }}
     >
-      <div className="max-w-md w-full bg-black/20 backdrop-blur-lg rounded-xl shadow-2xl p-8 space-y-6 border border-white/20">
+      <div className="relative max-w-md w-full bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-2xl p-8 space-y-6 border border-primary-500/20 shadow-primary-500/10">
         <div className="text-center">
-            <h1 className="text-5xl font-bold text-white">Samagra360</h1>
+            <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-primary-300">Samagra360</h1>
             <p className="text-slate-300 mt-2">{t('login.title')}</p>
         </div>
         <form onSubmit={handleLogin} className="space-y-6">
@@ -37,7 +40,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
             placeholder={t('login.email_placeholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border border-white/20 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition"
+            className="w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/50 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition duration-300"
             required
           />
           <input
@@ -45,7 +48,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
             placeholder={t('login.password_placeholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-white/20 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition"
+            className="w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/50 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition duration-300"
             required
           />
           <div className="flex items-center justify-between">
@@ -56,7 +59,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="h-4 w-4 rounded border-slate-500 text-primary-500 focus:ring-primary-400 bg-transparent"
+                    className="custom-checkbox h-4 w-4 appearance-none rounded border-2 border-primary-500/50 text-primary-500 focus:ring-primary-400 focus:ring-offset-0 bg-transparent transition duration-200 checked:bg-primary-500"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-slate-300">
                     {t('login.remember_me')}

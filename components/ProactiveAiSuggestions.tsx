@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { GoogleGenAI } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
 import type { Product, Sale } from '../types';
@@ -35,62 +35,66 @@ const getUpcomingFestivals = () => {
 const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ products, sales }) => {
   const { t } = useTranslation();
   const [suggestions, setSuggestions] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Start in loading state
   const [error, setError] = useState<string | null>(null);
 
-  const generateSuggestions = async () => {
-    setIsLoading(true);
-    setError(null);
-    setSuggestions(null);
+  useEffect(() => {
+    const generateSuggestions = async () => {
+        setIsLoading(true);
+        setError(null);
+        setSuggestions(null);
 
-    try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-      const upcomingFestivals = getUpcomingFestivals();
+        try {
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+            const upcomingFestivals = getUpcomingFestivals();
 
-      const prompt = `
-        You are an expert retail analyst for an Indian grocery store. Your goal is to provide proactive, data-driven advice.
+            const prompt = `
+                You are an expert retail analyst for an Indian grocery store. Your goal is to provide proactive, data-driven advice.
 
-        CONTEXT:
-        - Today's Date: ${new Date().toISOString()}
-        - Upcoming Major Indian Festivals (next 60 days): ${upcomingFestivals || 'None in the immediate future'}
-        - All monetary values are in Indian Rupees (₹).
+                CONTEXT:
+                - Today's Date: ${new Date().toISOString()}
+                - Upcoming Major Indian Festivals (next 60 days): ${upcomingFestivals || 'None in the immediate future'}
+                - All monetary values are in Indian Rupees (₹).
 
-        TASK:
-        Analyze the provided INVENTORY DATA and one year of SALES HISTORY. Based on this, provide 3-5 concrete, actionable suggestions for the shop owner. For each suggestion, provide a clear "Action" and a "Reasoning".
+                TASK:
+                Analyze the provided INVENTORY DATA and one year of SALES HISTORY. Based on this, provide 3-5 concrete, actionable suggestions for the shop owner. For each suggestion, provide a clear "Action" and a "Reasoning".
 
-        ANALYSIS CHECKLIST:
-        1.  **Seasonal Demand:** Given the upcoming festivals, what products (e.g., sweets, special grains, ghee, oil, dry fruits) should be stocked up?
-        2.  **Historical Trends:** Compare sales from the last 30-60 days with the same period from LAST YEAR. Identify products with significant sales growth or decline.
-        3.  **Restock Alerts:** Find popular, fast-moving products that are currently low in stock. Recommend a specific quantity to order based on their sales velocity.
-        4.  **Slow-Moving Stock:** Identify products with high inventory but very low sales in the past 90 days. Suggest a strategy (e.g., 'Offer a 10% discount' or 'Bundle with a popular item').
+                ANALYSIS CHECKLIST:
+                1.  **Seasonal Demand:** Given the upcoming festivals, what products (e.g., sweets, special grains, ghee, oil, dry fruits) should be stocked up?
+                2.  **Historical Trends:** Compare sales from the last 30-60 days with the same period from LAST YEAR. Identify products with significant sales growth or decline.
+                3.  **Restock Alerts:** Find popular, fast-moving products that are currently low in stock. Recommend a specific quantity to order based on their sales velocity.
+                4.  **Slow-Moving Stock:** Identify products with high inventory but very low sales in the past 90 days. Suggest a strategy (e.g., 'Offer a 10% discount' or 'Bundle with a popular item').
 
-        OUTPUT FORMAT:
-        Use Markdown for formatting. For each suggestion, use the following structure:
-        **Action:** [Your specific, quantifiable recommendation. E.g., "Restock 50kg of India Gate Basmati Rice."]
-        **Reasoning:** [Your data-backed explanation. E.g., "Sales for this item increased by 40% during the Diwali period last year, and current stock is only 20kg."]
+                OUTPUT FORMAT:
+                Use Markdown for formatting. For each suggestion, use the following structure:
+                **Action:** [Your specific, quantifiable recommendation. E.g., "Restock 50kg of India Gate Basmati Rice."]
+                **Reasoning:** [Your data-backed explanation. E.g., "Sales for this item increased by 40% during the Diwali period last year, and current stock is only 20kg."]
 
-        ---
-        INVENTORY DATA:
-        ${JSON.stringify(products, null, 2)}
-        ---
-        SALES HISTORY (1 Year):
-        ${JSON.stringify(sales, null, 2)}
-      `;
+                ---
+                INVENTORY DATA:
+                ${JSON.stringify(products, null, 2)}
+                ---
+                SALES HISTORY (1 Year):
+                ${JSON.stringify(sales, null, 2)}
+            `;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt
-      });
-      
-      setSuggestions(response.text);
+            const response = await ai.models.generateContent({
+                model: 'gemini-2.5-flash',
+                contents: prompt
+            });
+            
+            setSuggestions(response.text);
 
-    } catch (err) {
-      console.error(err);
-      setError(t('proactive_ai_suggestions.error'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        } catch (err) {
+            console.error(err);
+            setError(t('proactive_ai_suggestions.error'));
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    generateSuggestions();
+  }, [products, sales, t]); // Rerun if data changes
 
   const renderContent = () => {
     if (isLoading) {
@@ -122,19 +126,11 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
         </div>
       );
     }
-    return (
-      <div className="text-center py-8">
-        <p className="text-slate-500 dark:text-slate-400 mb-4">{t('proactive_ai_suggestions.description')}</p>
-        <Button onClick={generateSuggestions}>
-          <LightbulbIcon className="mr-2" />
-          {t('proactive_ai_suggestions.button')}
-        </Button>
-      </div>
-    );
+    return null; // Return nothing if there are no suggestions and not loading/error
   };
   
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
+    <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 min-h-[200px]">
       <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 p-6 border-b border-slate-200 dark:border-slate-700 flex items-center">
         <LightbulbIcon className="mr-3 text-yellow-500" /> {t('proactive_ai_suggestions.title')}
       </h2>

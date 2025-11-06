@@ -95,7 +95,7 @@ const PointOfSale: React.FC<PointOfSaleProps> = ({
           setBarcodeInput('');
       }
   }
-
+  
   const updateQuantity = (productId: string, newQuantity: number) => {
     const product = products.find(p => p.id === productId);
     if (!product) return;

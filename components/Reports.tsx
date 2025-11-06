@@ -27,63 +27,86 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
         // Chart and Top Products data
         let filteredSales = [];
         let chartData: { name: string, revenue: number }[] = [];
+        let topProductsTitleKey = 'reports.top_selling_products';
+        let topProductsTitleOptions: { period?: string } = {};
         
         if (activePeriod === 'week') {
-            const last7Days = Array.from({ length: 7 }, (_, i) => {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
+            topProductsTitleKey = 'reports.top_selling_products_period';
+            topProductsTitleOptions = { period: t('reports.period.this_week') };
+
+            const currentDayOfWeek = now.getDay(); // Sunday - 0, Saturday - 6
+            const weekStart = new Date(now);
+            weekStart.setDate(now.getDate() - currentDayOfWeek);
+            weekStart.setHours(0, 0, 0, 0);
+
+            const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
+                const d = new Date(weekStart);
+                d.setDate(weekStart.getDate() + i);
                 return d;
-            }).reverse();
+            });
             
-            filteredSales = sales.filter(s => new Date(s.date) >= last7Days[0]);
-            chartData = last7Days.map(day => {
-                const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate());
-                const dayEnd = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
-                const daySales = sales.filter(s => {
+            const weekEnd = new Date(daysOfWeek[6]);
+            weekEnd.setHours(23, 59, 59, 999);
+            
+            filteredSales = sales.filter(s => {
+                const saleDate = new Date(s.date);
+                return saleDate >= weekStart && saleDate <= weekEnd;
+            });
+
+            chartData = daysOfWeek.map(day => {
+                const dayStart = new Date(day);
+                const dayEnd = new Date(day);
+                dayEnd.setHours(23, 59, 59, 999);
+
+                const daySales = filteredSales.filter(s => {
                     const saleDate = new Date(s.date);
-                    return saleDate >= dayStart && saleDate < dayEnd;
+                    return saleDate >= dayStart && saleDate <= dayEnd;
                 });
                 return {
-                    name: day.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
+                    name: day.toLocaleDateString('en-IN', { weekday: 'short' }),
                     revenue: daySales.reduce((sum, s) => sum + s.total, 0)
                 };
             });
 
         } else if (activePeriod === 'month') {
-            const last30Days = Array.from({ length: 30 }, (_, i) => {
-                const d = new Date();
-                d.setDate(d.getDate() - i);
-                return d;
-            }).reverse();
+            topProductsTitleKey = 'reports.top_selling_products_period';
+            topProductsTitleOptions = { period: t('reports.period.this_month') };
+            
+            const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            const daysInMonth = monthEnd.getDate();
 
-            filteredSales = sales.filter(s => new Date(s.date) >= last30Days[0]);
-            chartData = last30Days.map(day => {
-                const dayStart = new Date(day.getFullYear(), day.getMonth(), day.getDate());
-                const dayEnd = new Date(day.getFullYear(), day.getMonth(), day.getDate() + 1);
-                const daySales = sales.filter(s => {
+            const daysOfMonth = Array.from({ length: daysInMonth }, (_, i) => new Date(now.getFullYear(), now.getMonth(), i + 1));
+            
+            filteredSales = sales.filter(s => new Date(s.date) >= thisMonthStart);
+
+            chartData = daysOfMonth.map(day => {
+                const dayStart = new Date(day);
+                const dayEnd = new Date(day);
+                dayEnd.setHours(23, 59, 59, 999);
+                const daySales = filteredSales.filter(s => {
                     const saleDate = new Date(s.date);
-                    return saleDate >= dayStart && saleDate < dayEnd;
+                    return saleDate >= dayStart && saleDate <= dayEnd;
                 });
                 return {
-                    name: day.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
+                    name: day.getDate().toString(),
                     revenue: daySales.reduce((sum, s) => sum + s.total, 0)
                 };
             });
-        } else if (activePeriod === 'year') {
-            const last12Months = Array.from({ length: 12 }, (_, i) => {
-                const d = new Date();
-                d.setMonth(d.getMonth() - i);
-                return d;
-            }).reverse();
 
-            filteredSales = sales.filter(s => new Date(s.date) >= last12Months[0]);
-            chartData = last12Months.map(month => {
-                const monthSales = sales.filter(s => {
+        } else if (activePeriod === 'year') {
+            topProductsTitleKey = 'reports.top_selling_products_period';
+            topProductsTitleOptions = { period: t('reports.period.this_year') };
+
+            const monthsOfYear = Array.from({ length: 12 }, (_, i) => new Date(now.getFullYear(), i, 1));
+            
+            filteredSales = sales.filter(s => new Date(s.date) >= thisYearStart);
+            chartData = monthsOfYear.map(month => {
+                const monthSales = filteredSales.filter(s => {
                     const saleDate = new Date(s.date);
                     return saleDate.getFullYear() === month.getFullYear() && saleDate.getMonth() === month.getMonth();
                 });
                  return {
-                    name: month.toLocaleDateString('en-IN', { month: 'short', year: '2-digit' }),
+                    name: month.toLocaleDateString('en-IN', { month: 'short' }),
                     revenue: monthSales.reduce((sum, s) => sum + s.total, 0)
                 };
             });
@@ -104,8 +127,13 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
             .sort((a, b) => b.quantity - a.quantity)
             .slice(0, 5);
 
-        return { todayRevenue, monthRevenue, yearRevenue, chartData, topSellingProducts };
-    }, [sales, activePeriod]);
+        const translatedTitle = t(topProductsTitleKey);
+        const topProductsTitle = topProductsTitleOptions.period
+            ? translatedTitle.replace('{period}', topProductsTitleOptions.period)
+            : translatedTitle;
+
+        return { todayRevenue, monthRevenue, yearRevenue, chartData, topSellingProducts, topProductsTitle };
+    }, [sales, activePeriod, t]);
 
     const PeriodButton: React.FC<{ period: Period, label: string }> = ({ period, label }) => (
       <button
@@ -165,6 +193,7 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
                                     color: 'white'
                                 }}
                                 labelStyle={{ fontWeight: 'bold' }}
+                                formatter={(value: number) => `₹${value.toFixed(2)}`}
                             />
                             <Legend />
                             <Line type="monotone" dataKey="revenue" name={t('reports.revenue')} stroke="rgb(var(--color-primary-500))" strokeWidth={2} activeDot={{ r: 8 }} />
@@ -174,7 +203,7 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
             </div>
             
             <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700">
-                <h2 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">{t('reports.top_selling_products')}</h2>
+                <h2 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">{reportData.topProductsTitle}</h2>
                  <ul className="space-y-2">
                     {reportData.topSellingProducts.map((product, index) => (
                         <li key={product.name} className="flex justify-between items-center p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">

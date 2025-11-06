@@ -54,18 +54,21 @@ const SignUpPage: React.FC<{ onSwitchToLogin: () => void }> = ({ onSwitchToLogin
     }
   };
 
-  const formInputStyle = "w-full p-3 border border-white/20 rounded-lg bg-white/10 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition";
+  const formInputStyle = "w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/50 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition duration-300";
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center flex items-center justify-center p-4"
-      style={{ backgroundImage: "url('https://storage.googleapis.com/aistudio-hosting/images/8e612330-d3b5-410a-9957-3f95b3d681f2.png')" }}
+      className="min-h-screen bg-cover bg-center bg-no-repeat animate-[background-pan_15s_ease-in-out_infinite] flex items-center justify-center p-4"
+      style={{ 
+        backgroundImage: "linear-gradient(rgba(2, 6, 23, 0.5), rgba(2, 6, 23, 0.7)), url('https://storage.googleapis.com/aistudio-hosting/images/8e612330-d3b5-410a-9957-3f95b3d681f2.png')",
+        backgroundSize: '150% 150%',
+      }}
     >
-      <div className="max-w-md w-full bg-black/20 backdrop-blur-lg rounded-xl shadow-2xl p-8 border border-white/20">
+      <div className="relative max-w-md w-full bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-2xl p-8 border border-primary-500/20 shadow-primary-500/10">
         <h1 className="text-3xl font-bold text-center text-white mb-6">{t('signup.title')}</h1>
         <form onSubmit={handleSignUp} className="space-y-4 max-h-[75vh] overflow-y-auto pr-2">
         <div className="flex flex-col items-center space-y-3">
-            <div className="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center ring-2 ring-white/20 overflow-hidden">
+            <div className="w-24 h-24 rounded-full bg-slate-800/50 flex items-center justify-center ring-2 ring-primary-500/30 overflow-hidden">
                 {shopLogo ? (
                     <img src={shopLogo} alt="Shop Logo Preview" className="w-full h-full object-cover" />
                 ) : (

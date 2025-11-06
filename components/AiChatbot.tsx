@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
-import type { InventoryHook } from '../types';
+import type { InventoryHook, Product, Sale } from '../types';
 import { AiIcon } from './icons/Icons';
 import Button from './ui/Button';
 
@@ -9,6 +9,74 @@ interface Message {
   role: 'user' | 'model';
   text: string;
 }
+
+// Data summarization function
+const summarizeData = (products: Product[], sales: Sale[]) => {
+  if (products.length === 0 && sales.length === 0) {
+    return {
+      summary: "No inventory or sales data available."
+    };
+  }
+
+  // Basic stats
+  const totalProducts = products.length;
+  const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
+  const lowStockProductsCount = products.filter(p => p.stock <= p.lowStockThreshold).length;
+
+  // Sales stats
+  const totalSalesTransactions = sales.length;
+  const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
+  
+  let firstSaleDate = 'N/A';
+  let lastSaleDate = 'N/A';
+  if (sales.length > 0) {
+    const salesTimestamps = sales.map(s => new Date(s.date).getTime());
+    firstSaleDate = new Date(Math.min(...salesTimestamps)).toLocaleDateString('en-CA');
+    lastSaleDate = new Date(Math.max(...salesTimestamps)).toLocaleDateString('en-CA');
+  }
+  
+  // Top selling products logic
+  const productSales: { [key: string]: { name: string, quantity: number, revenue: number } } = {};
+  sales.forEach(sale => {
+      sale.items.forEach(item => {
+          if (!productSales[item.productId]) {
+              const product = products.find(p => p.id === item.productId);
+              productSales[item.productId] = { name: item.name || product?.name || 'Unknown', quantity: 0, revenue: 0 };
+          }
+          productSales[item.productId].quantity += item.quantity;
+          productSales[item.productId].revenue += item.price * item.quantity;
+      });
+  });
+
+  const top5ByQuantity = Object.values(productSales)
+      .sort((a, b) => b.quantity - a.quantity)
+      .slice(0, 5)
+      .map(p => `${p.name} (${p.quantity} units)`);
+
+  const top5ByRevenue = Object.values(productSales)
+      .sort((a, b) => b.revenue - a.revenue)
+      .slice(0, 5)
+      .map(p => `${p.name} (₹${p.revenue.toFixed(2)})`);
+  
+  const categories = [...new Set(products.map(p => p.category))];
+
+  return {
+    inventory_summary: {
+      total_products: totalProducts,
+      total_stock_units: totalStock,
+      low_stock_items_count: lowStockProductsCount,
+      product_categories: categories,
+    },
+    sales_summary: {
+      period: sales.length > 0 ? `${firstSaleDate} to ${lastSaleDate}` : 'No sales recorded',
+      total_transactions: totalSalesTransactions,
+      total_revenue: `₹${totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
+      top_5_products_by_quantity_sold: top5ByQuantity,
+      top_5_products_by_revenue: top5ByRevenue,
+    }
+  };
+};
+
 
 const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
   const { t } = useTranslation();
@@ -30,7 +98,7 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
 
   const initializeChat = () => {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-    const systemInstruction = `You are an expert inventory management assistant for a retail shop. Analyze the provided JSON data which includes product lists and sales history. Answer the user's questions based on this data. Provide clear, concise, and actionable insights. All monetary values are in Indian Rupees (₹). Today's date is ${new Date().toLocaleDateString('en-IN')}. Keep your answers based *only* on the data provided in the prompt.`;
+    const systemInstruction = `You are an expert inventory management assistant for a retail shop. Analyze the provided JSON data which is a *summary* of the shop's inventory and sales. You will not receive the full raw data. Answer the user's questions based on this summary. Provide clear, concise, and actionable insights. All monetary values are in Indian Rupees (₹). Today's date is ${new Date().toLocaleDateString('en-IN')}. Keep your answers based *only* on the data provided in the prompt.`;
     
     chatRef.current = ai.chats.create({
       model: 'gemini-2.5-flash',
@@ -55,13 +123,13 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
       if (!chatRef.current) {
         initializeChat();
       }
-
+      
+      const dataSummary = summarizeData(products, sales);
       const prompt = `
-        Here is the current inventory and sales data:
-        Products: ${JSON.stringify(products, null, 2)}
-        Sales: ${JSON.stringify(sales, null, 2)}
+        Here is a summary of the current inventory and sales data:
+        ${JSON.stringify(dataSummary, null, 2)}
 
-        Based on the data above and our conversation history, please answer my new question: "${currentInput}"
+        Based on the data summary above and our conversation history, please answer my new question: "${currentInput}"
       `;
 
       if (chatRef.current) {
