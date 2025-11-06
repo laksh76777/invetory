@@ -11,9 +11,11 @@ interface SettingsProps {
   showRevenueCard: boolean;
   onToggleRevenueCard: () => void;
   clearSalesData: () => void;
+  showAiSuggestionBox: boolean;
+  onToggleAiSuggestionBox: () => void;
 }
 
-const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCard, clearSalesData }) => {
+const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCard, clearSalesData, showAiSuggestionBox, onToggleAiSuggestionBox }) => {
   const { currentUser, updateUser, logout } = useAuth();
   const { t } = useTranslation();
   const { theme, updateTheme, availableColors } = useTheme();
@@ -219,12 +221,21 @@ const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCar
               </div>
               <div className="mt-8">
                 <label className="block text-sm font-medium mb-3">{t('settings.dashboard_widgets')}</label>
-                <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
-                    <span className="text-slate-700 dark:text-slate-300">{t('settings.show_revenue_card')}</span>
-                    <label htmlFor="toggle-revenue" className="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-revenue" className="sr-only peer" checked={showRevenueCard} onChange={onToggleRevenueCard} />
-                        <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
-                    </label>
+                <div className="space-y-3">
+                    <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
+                        <span className="text-slate-700 dark:text-slate-300">{t('settings.show_revenue_card')}</span>
+                        <label htmlFor="toggle-revenue" className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-revenue" className="sr-only peer" checked={showRevenueCard} onChange={onToggleRevenueCard} />
+                            <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
+                        </label>
+                    </div>
+                    <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
+                        <span className="text-slate-700 dark:text-slate-300">{t('settings.show_ai_suggestion_box')}</span>
+                        <label htmlFor="toggle-ai-suggestion" className="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-ai-suggestion" className="sr-only peer" checked={showAiSuggestionBox} onChange={onToggleAiSuggestionBox} />
+                            <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
+                        </label>
+                    </div>
                 </div>
               </div>
           </div>

@@ -29,7 +29,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
         backgroundSize: '150% 150%',
       }}
     >
-      <div className="relative max-w-md w-full bg-slate-900/40 backdrop-blur-xl rounded-2xl shadow-2xl p-8 space-y-6 border border-primary-500/20 shadow-primary-500/10">
+      <div className="relative max-w-md w-full bg-slate-900/60 backdrop-blur-2xl rounded-2xl p-8 space-y-6 border border-primary-500/40 shadow-2xl shadow-primary-500/30">
         <div className="text-center">
             <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-white to-primary-300">Samagra360</h1>
             <p className="text-slate-300 mt-2">{t('login.title')}</p>
@@ -40,7 +40,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
             placeholder={t('login.email_placeholder')}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/50 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition duration-300"
+            className="w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/80 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400/50 focus:border-primary-400 hover:border-primary-500/50 focus:bg-slate-800/90 transition-all duration-300"
             required
           />
           <input
@@ -48,7 +48,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
             placeholder={t('login.password_placeholder')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/50 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 transition duration-300"
+            className="w-full p-3 border border-slate-500/50 rounded-lg bg-slate-800/80 text-white placeholder:text-slate-400 focus:ring-2 focus:ring-primary-400/50 focus:border-primary-400 hover:border-primary-500/50 focus:bg-slate-800/90 transition-all duration-300"
             required
           />
           <div className="flex items-center justify-between">
@@ -71,7 +71,7 @@ const LoginPage: React.FC<{ onSwitchToSignUp: () => void }> = ({ onSwitchToSignU
         </form>
         <p className="text-center text-sm text-slate-300">
           {t('login.no_account')}{' '}
-          <button onClick={onSwitchToSignUp} className="font-medium text-primary-400 hover:underline">
+          <button onClick={onSwitchToSignUp} className="font-medium text-primary-400 hover:text-primary-300 transition-colors duration-300">
             {t('login.signup_link')}
           </button>
         </p>

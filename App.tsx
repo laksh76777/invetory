@@ -23,6 +23,10 @@ const App: React.FC = () => {
     const saved = localStorage.getItem('showRevenueCard');
     return saved !== null ? JSON.parse(saved) : true;
   });
+  const [showAiSuggestionBox, setShowAiSuggestionBox] = useState<boolean>(() => {
+    const saved = localStorage.getItem('showAiSuggestionBox');
+    return saved !== null ? JSON.parse(saved) : true;
+  });
 
   // --- POS State Lifted Up ---
   const [posCart, setPosCart] = useState<SaleItem[]>([]);
@@ -44,6 +48,14 @@ const App: React.FC = () => {
     });
   };
 
+  const toggleAiSuggestionBox = () => {
+    setShowAiSuggestionBox(prev => {
+        const newState = !prev;
+        localStorage.setItem('showAiSuggestionBox', JSON.stringify(newState));
+        return newState;
+    });
+  };
+
   if (!currentUser) {
     return isLoginView
       ? <LoginPage onSwitchToSignUp={() => setIsLoginView(false)} />
@@ -53,7 +65,7 @@ const App: React.FC = () => {
   const renderView = () => {
     switch (currentView) {
       case 'dashboard':
-        return <Dashboard {...inventory} showRevenueCard={showRevenueCard} />;
+        return <Dashboard {...inventory} showRevenueCard={showRevenueCard} showAiSuggestionBox={showAiSuggestionBox} />;
       case 'products':
         return <Products {...inventory} />;
       case 'pos':
@@ -73,9 +85,15 @@ const App: React.FC = () => {
       case 'ai_chatbot':
         return <AiChatbot {...inventory} />;
       case 'settings':
-        return <Settings showRevenueCard={showRevenueCard} onToggleRevenueCard={toggleRevenueCard} clearSalesData={inventory.clearSalesData} />;
+        return <Settings 
+                    showRevenueCard={showRevenueCard} 
+                    onToggleRevenueCard={toggleRevenueCard} 
+                    clearSalesData={inventory.clearSalesData}
+                    showAiSuggestionBox={showAiSuggestionBox}
+                    onToggleAiSuggestionBox={toggleAiSuggestionBox}
+                />;
       default:
-        return <Dashboard {...inventory} showRevenueCard={showRevenueCard} />;
+        return <Dashboard {...inventory} showRevenueCard={showRevenueCard} showAiSuggestionBox={showAiSuggestionBox} />;
     }
   };
 

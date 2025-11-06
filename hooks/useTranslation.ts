@@ -16,9 +16,9 @@ export const TranslationProvider: React.FC<{ children: ReactNode }> = ({ childre
     const loadTranslations = async () => {
         try {
             const [enRes, hiRes, knRes] = await Promise.all([
-                fetch('../locales/en.json'),
-                fetch('../locales/hi.json'),
-                fetch('../locales/kn.json'),
+                fetch('./locales/en.json'),
+                fetch('./locales/hi.json'),
+                fetch('./locales/kn.json'),
             ]);
             if (!enRes.ok || !hiRes.ok || !knRes.ok) {
                 throw new Error('Failed to fetch translation files');

@@ -8,13 +8,15 @@ import Button from './ui/Button';
 import Modal from './ui/Modal';
 import AiSuggestionBox from './AiSuggestionBox';
 import ProactiveAiSuggestions from './ProactiveAiSuggestions';
+import SalesVelocityAlerts from './SalesVelocityAlerts';
 
 
 interface DashboardProps extends InventoryHook {
   showRevenueCard: boolean;
+  showAiSuggestionBox: boolean;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRevenue, revenueResetTimestamp, showRevenueCard }) => {
+const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRevenue, revenueResetTimestamp, showRevenueCard, showAiSuggestionBox }) => {
   const { t, language } = useTranslation();
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
@@ -86,6 +88,8 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
     resetDashboardRevenue();
     setIsConfirmModalOpen(false);
   }
+  
+  const aiGridCols = showAiSuggestionBox ? 'lg:grid-cols-2' : 'lg:grid-cols-1';
 
   return (
     <div>
@@ -102,7 +106,7 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
             </div>
         </div>
       </div>
-      
+
       {/* Summary Cards */}
       <div className={`grid grid-cols-1 md:grid-cols-2 ${showRevenueCard ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 mb-8`}>
         <Card 
@@ -211,10 +215,16 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
       </div>
 
       {/* AI Suggestion Boxes */}
-      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <AiSuggestionBox products={products} sales={sales} />
+      <div className={`mt-8 grid grid-cols-1 ${aiGridCols} gap-8`}>
+        {showAiSuggestionBox && <AiSuggestionBox products={products} sales={sales} />}
         <ProactiveAiSuggestions products={products} sales={sales} />
       </div>
+
+      {/* Sales Velocity Alerts */}
+      <div className="mt-8">
+        <SalesVelocityAlerts products={products} sales={sales} />
+      </div>
+
 
       {isConfirmModalOpen && (
           <Modal

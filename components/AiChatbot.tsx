@@ -22,6 +22,7 @@ const summarizeData = (products: Product[], sales: Sale[]) => {
   const totalProducts = products.length;
   const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
   const lowStockProductsCount = products.filter(p => p.stock <= p.lowStockThreshold).length;
+  const categories = [...new Set(products.map(p => p.category))];
 
   // Sales stats
   const totalSalesTransactions = sales.length;
@@ -57,14 +58,57 @@ const summarizeData = (products: Product[], sales: Sale[]) => {
       .sort((a, b) => b.revenue - a.revenue)
       .slice(0, 5)
       .map(p => `${p.name} (₹${p.revenue.toFixed(2)})`);
-  
-  const categories = [...new Set(products.map(p => p.category))];
+
+  // --- Advanced Analysis ---
+  const now = new Date();
+  const ninetyDaysAgo = new Date(new Date().setDate(now.getDate() - 90));
+  const salesLast90Days = sales.filter(s => new Date(s.date) >= ninetyDaysAgo);
+
+  // Top 3 categories by revenue (last quarter)
+  const categoryRevenue: { [key: string]: number } = {};
+  salesLast90Days.forEach(sale => {
+    sale.items.forEach(item => {
+      const product = products.find(p => p.id === item.productId);
+      if (product) {
+        categoryRevenue[product.category] = (categoryRevenue[product.category] || 0) + (item.price * item.quantity);
+      }
+    });
+  });
+
+  const top3CategoriesByRevenueLastQuarter = Object.entries(categoryRevenue)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([category, revenue]) => `${category} (₹${revenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`);
+
+  // Low stock based on sales velocity
+  const productSalesLast90Days: { [key: string]: number } = {};
+  salesLast90Days.forEach(sale => {
+    sale.items.forEach(item => {
+      productSalesLast90Days[item.productId] = (productSalesLast90Days[item.productId] || 0) + item.quantity;
+    });
+  });
+
+  // FIX: The avgMonthlySales constant was out of scope in the .map() function.
+  // Refactored to map over products first, calculate and attach avgMonthlySales,
+  // then filter based on this new property, and finally map to the desired string format.
+  // This is more readable and avoids recalculating the average sales.
+  const criticalStockProducts = products
+    .map(product => ({
+      ...product,
+      avgMonthlySales: (productSalesLast90Days[product.id] || 0) / 3,
+    }))
+    .filter(p => {
+      // Only flag if there's been some sale and stock is critically low
+      if (p.avgMonthlySales === 0) return false;
+      return p.stock < p.avgMonthlySales * 0.15;
+    })
+    .map(p => `${p.name} (Stock: ${p.stock}, Avg Monthly Sale: ${p.avgMonthlySales.toFixed(1)})`);
 
   return {
     inventory_summary: {
       total_products: totalProducts,
       total_stock_units: totalStock,
-      low_stock_items_count: lowStockProductsCount,
+      items_at_low_stock_threshold: lowStockProductsCount,
       product_categories: categories,
     },
     sales_summary: {
@@ -73,6 +117,10 @@ const summarizeData = (products: Product[], sales: Sale[]) => {
       total_revenue: `₹${totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       top_5_products_by_quantity_sold: top5ByQuantity,
       top_5_products_by_revenue: top5ByRevenue,
+    },
+    advanced_analysis: {
+        top_3_categories_by_revenue_last_quarter: top3CategoriesByRevenueLastQuarter,
+        products_with_critical_stock_based_on_sales_velocity: criticalStockProducts,
     }
   };
 };
@@ -96,8 +144,8 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
     }
   }, [messages]);
 
-  const initializeChat = () => {
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+  const initializeChat = (apiKey: string) => {
+    const ai = new GoogleGenAI({ apiKey });
     const systemInstruction = `You are an expert inventory management assistant for a retail shop. Analyze the provided JSON data which is a *summary* of the shop's inventory and sales. You will not receive the full raw data. Answer the user's questions based on this summary. Provide clear, concise, and actionable insights. All monetary values are in Indian Rupees (₹). Today's date is ${new Date().toLocaleDateString('en-IN')}. Keep your answers based *only* on the data provided in the prompt.`;
     
     chatRef.current = ai.chats.create({
@@ -119,9 +167,18 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
     setIsLoading(true);
     setError(null);
 
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+        const errorMsg = t('common.api_key_not_configured');
+        setError(errorMsg);
+        setMessages(prev => [...prev, { role: 'model', text: errorMsg }]);
+        setIsLoading(false);
+        return;
+    }
+
     try {
       if (!chatRef.current) {
-        initializeChat();
+        initializeChat(apiKey);
       }
       
       const dataSummary = summarizeData(products, sales);

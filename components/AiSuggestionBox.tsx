@@ -21,8 +21,15 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
     setError(null);
     setAdvice(null);
 
+    const apiKey = process.env.API_KEY;
+    if (!apiKey) {
+        setError(t('common.api_key_not_configured'));
+        setIsLoading(false);
+        return;
+    }
+
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+      const ai = new GoogleGenAI({ apiKey });
 
       // Only include recent sales to keep the prompt concise and relevant
       const oneMonthAgo = new Date();

@@ -5,7 +5,8 @@
         "add_product": "Add Product",
         "close": "Close",
         "print": "Print",
-        "delete": "Delete"
+        "delete": "Delete",
+        "api_key_not_configured": "AI features are disabled. API Key is not configured."
     },
     "login": {
         "title": "Welcome to Samagra360",
@@ -192,6 +193,7 @@
         "logout_button": "Logout",
         "dashboard_widgets": "Dashboard Widgets",
         "show_revenue_card": "Show 'Total Revenue' Card",
+        "show_ai_suggestion_box": "Show 'AI-Powered Advice' Card",
         "data_management_title": "Data Management",
         "clear_sales_data_button": "Clear All Sales Data",
         "clear_sales_data_description": "Permanently delete all sales history. This will reset your reports. This action cannot be undone.",
@@ -221,5 +223,9 @@
         "button": "Analyze & Suggest",
         "loading": "Performing deep analysis...",
         "error": "Could not generate suggestions. Please try again later."
+    },
+    "sales_velocity_alerts": {
+        "title": "Sales Velocity Alert",
+        "item_alert": "\"{productName}\" sales dropped from {previousCount} to {currentCount} units in the last 30 days."
     }
 }
