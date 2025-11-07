@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { useTranslation } from '../hooks/useTranslation';
 import { useTheme } from '../hooks/useTheme';
+import { useApiKey } from '../hooks/useApiKey';
 import Button from './ui/Button';
 import Modal from './ui/Modal';
 import { LogoutIcon, ShopIcon } from './icons/Icons';
@@ -19,6 +20,7 @@ const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCar
   const { currentUser, updateUser, logout } = useAuth();
   const { t } = useTranslation();
   const { theme, updateTheme, availableColors } = useTheme();
+  const { apiKey, setApiKey } = useApiKey();
   
   const [formData, setFormData] = useState({
     shopName: '',
@@ -28,6 +30,8 @@ const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCar
     gstNumber: '',
     taxRate: 0,
   });
+  const [apiKeyInput, setApiKeyInput] = useState('');
+  const [isKeySaved, setIsKeySaved] = useState(false);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   const [logoRemoved, setLogoRemoved] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -48,6 +52,11 @@ const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCar
       setLogoRemoved(false);
     }
   }, [currentUser]);
+
+  useEffect(() => {
+    setApiKeyInput(apiKey || '');
+  }, [apiKey]);
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -95,6 +104,13 @@ const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCar
     setTimeout(() => setIsSaved(false), 3000); // Hide message after 3 seconds
   };
   
+  const handleSaveApiKey = (e: React.FormEvent) => {
+    e.preventDefault();
+    setApiKey(apiKeyInput.trim());
+    setIsKeySaved(true);
+    setTimeout(() => setIsKeySaved(false), 3000);
+  };
+
   if (!currentUser) {
     return null; // Or a loading spinner
   }
@@ -184,68 +200,84 @@ const Settings: React.FC<SettingsProps> = ({ showRevenueCard, onToggleRevenueCar
               </div>
           </div>
           
-          {/* Appearance Section */}
-          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
-              <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.appearance_title')}</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div>
-                      <label className="block text-sm font-medium mb-3">{t('settings.primary_color')}</label>
-                      <div className="flex items-center space-x-4">
-                          {Object.keys(availableColors).map(colorName => (
-                              <button
-                                  key={colorName}
-                                  type="button"
-                                  onClick={() => updateTheme({ color: colorName })}
-                                  className={`w-8 h-8 rounded-full capitalize ring-2 ring-offset-2 dark:ring-offset-slate-800 transition-transform transform hover:scale-110 ${theme.color === colorName ? 'ring-primary-500' : 'ring-transparent'}`}
-                                  style={{ backgroundColor: `rgb(${availableColors[colorName]['500']})` }}
-                                  aria-label={`Set theme color to ${colorName}`}
-                              />
-                          ))}
-                      </div>
-                  </div>
-                  <div>
-                      <label className="block text-sm font-medium mb-3">{t('settings.color_mode')}</label>
-                      <div className="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
-                          {(['light', 'dark', 'system'] as ThemeMode[]).map(mode => (
-                              <button
-                                  key={mode}
-                                  type="button"
-                                  onClick={() => updateTheme({ mode })}
-                                  className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-colors ${theme.mode === mode ? 'bg-white dark:bg-primary-900/50 text-primary-600 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
-                              >
-                                  {t(`settings.mode_${mode}`)}
-                              </button>
-                          ))}
-                      </div>
-                  </div>
-              </div>
-              <div className="mt-8">
-                <label className="block text-sm font-medium mb-3">{t('settings.dashboard_widgets')}</label>
-                <div className="space-y-3">
-                    <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
-                        <span className="text-slate-700 dark:text-slate-300">{t('settings.show_revenue_card')}</span>
-                        <label htmlFor="toggle-revenue" className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-revenue" className="sr-only peer" checked={showRevenueCard} onChange={onToggleRevenueCard} />
-                            <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
-                        </label>
-                    </div>
-                    <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
-                        <span className="text-slate-700 dark:text-slate-300">{t('settings.show_ai_suggestion_box')}</span>
-                        <label htmlFor="toggle-ai-suggestion" className="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-ai-suggestion" className="sr-only peer" checked={showAiSuggestionBox} onChange={onToggleAiSuggestionBox} />
-                            <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
-                        </label>
-                    </div>
-                </div>
-              </div>
-          </div>
-          
           <div className="flex justify-end items-center gap-4 pt-4">
               {isSaved && <p className="text-green-600 dark:text-green-400 text-sm animate-pulse">{t('settings.saved_message')}</p>}
               <Button type="submit">{t('common.save_changes')}</Button>
           </div>
         </form>
         
+        {/* AI Configuration Section */}
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.ai_config_title')}</h2>
+            <form onSubmit={handleSaveApiKey} className="space-y-4">
+                <div>
+                    <label htmlFor="apiKey" className="block text-sm font-medium">{t('settings.api_key_label')}</label>
+                    <input type="password" name="apiKey" id="apiKey" value={apiKeyInput} onChange={(e) => setApiKeyInput(e.target.value)} placeholder={t('settings.api_key_placeholder')} className={formInputStyle} />
+                    <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{t('settings.api_key_description')}</p>
+                </div>
+                 <div className="flex justify-end items-center gap-4">
+                    {isKeySaved && <p className="text-green-600 dark:text-green-400 text-sm animate-pulse">{t('settings.key_saved_message')}</p>}
+                    <Button type="submit">{t('settings.save_key_button')}</Button>
+                </div>
+            </form>
+        </div>
+        
+        {/* Appearance Section */}
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
+            <h2 className="text-xl font-bold mb-6 border-b border-slate-200 dark:border-slate-700 pb-4">{t('settings.appearance_title')}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <label className="block text-sm font-medium mb-3">{t('settings.primary_color')}</label>
+                    <div className="flex items-center space-x-4">
+                        {Object.keys(availableColors).map(colorName => (
+                            <button
+                                key={colorName}
+                                type="button"
+                                onClick={() => updateTheme({ color: colorName })}
+                                className={`w-8 h-8 rounded-full capitalize ring-2 ring-offset-2 dark:ring-offset-slate-800 transition-transform transform hover:scale-110 ${theme.color === colorName ? 'ring-primary-500' : 'ring-transparent'}`}
+                                style={{ backgroundColor: `rgb(${availableColors[colorName]['500']})` }}
+                                aria-label={`Set theme color to ${colorName}`}
+                            />
+                        ))}
+                    </div>
+                </div>
+                <div>
+                    <label className="block text-sm font-medium mb-3">{t('settings.color_mode')}</label>
+                    <div className="flex bg-slate-100 dark:bg-slate-700 rounded-lg p-1">
+                        {(['light', 'dark', 'system'] as ThemeMode[]).map(mode => (
+                            <button
+                                key={mode}
+                                type="button"
+                                onClick={() => updateTheme({ mode })}
+                                className={`flex-1 px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-colors ${theme.mode === mode ? 'bg-white dark:bg-primary-900/50 text-primary-600 dark:text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600'}`}
+                            >
+                                {t(`settings.mode_${mode}`)}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </div>
+            <div className="mt-8">
+              <label className="block text-sm font-medium mb-3">{t('settings.dashboard_widgets')}</label>
+              <div className="space-y-3">
+                  <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-slate-700 dark:text-slate-300">{t('settings.show_revenue_card')}</span>
+                      <label htmlFor="toggle-revenue" className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" id="toggle-revenue" className="sr-only peer" checked={showRevenueCard} onChange={onToggleRevenueCard} />
+                          <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
+                      </label>
+                  </div>
+                  <div className="flex items-center justify-between bg-slate-100 dark:bg-slate-800/50 rounded-lg p-3">
+                      <span className="text-slate-700 dark:text-slate-300">{t('settings.show_ai_suggestion_box')}</span>
+                      <label htmlFor="toggle-ai-suggestion" className="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" id="toggle-ai-suggestion" className="sr-only peer" checked={showAiSuggestionBox} onChange={onToggleAiSuggestionBox} />
+                          <div className="w-11 h-6 bg-slate-200 dark:bg-slate-600 rounded-full peer peer-focus:ring-2 peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-500 peer-checked:bg-primary-600"></div>
+                      </label>
+                  </div>
+              </div>
+            </div>
+        </div>
+
         {/* Data Management Section */}
         <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-8 border border-slate-200 dark:border-slate-700">
             <h2 className="text-xl font-bold mb-4">{t('settings.data_management_title')}</h2>

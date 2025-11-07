@@ -6,7 +6,7 @@
         "close": "Close",
         "print": "Print",
         "delete": "Delete",
-        "api_key_not_configured": "AI features are disabled. API Key is not configured."
+        "api_key_not_configured_link": "AI features are disabled. Please configure your API Key in the Settings page."
     },
     "login": {
         "title": "Welcome to Samagra360",
@@ -181,6 +181,12 @@
         "email": "Email Address",
         "tax_config_title": "Tax Configuration",
         "tax_rate": "Default Tax Rate (%)",
+        "ai_config_title": "AI Configuration",
+        "api_key_label": "Gemini API Key",
+        "api_key_placeholder": "Enter your API key",
+        "api_key_description": "Your API key is stored locally in your browser and is never sent to our servers.",
+        "save_key_button": "Save Key",
+        "key_saved_message": "API Key saved!",
         "appearance_title": "Appearance",
         "primary_color": "Primary Color",
         "color_mode": "Color Mode",

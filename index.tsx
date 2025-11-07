@@ -4,6 +4,7 @@ import App from './App';
 import { AuthProvider } from './hooks/useAuth';
 import { TranslationProvider } from './hooks/useTranslation';
 import { ThemeProvider } from './hooks/useTheme';
+import { ApiKeyProvider } from './hooks/useApiKey';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -16,7 +17,9 @@ root.render(
     <AuthProvider>
       <TranslationProvider>
         <ThemeProvider>
-          <App />
+          <ApiKeyProvider>
+            <App />
+          </ApiKeyProvider>
         </ThemeProvider>
       </TranslationProvider>
     </AuthProvider>

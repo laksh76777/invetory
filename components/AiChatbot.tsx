@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { GoogleGenAI, Chat, GenerateContentResponse } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiKey } from '../hooks/useApiKey';
 import type { InventoryHook, Product, Sale } from '../types';
 import { AiIcon } from './icons/Icons';
 import Button from './ui/Button';
@@ -128,14 +129,19 @@ const summarizeData = (products: Product[], sales: Sale[]) => {
 
 const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
   const { t } = useTranslation();
-  const [messages, setMessages] = useState<Message[]>([
-    { role: 'model', text: t('ai_chatbot.initial_message') }
-  ]);
+  const { apiKey } = useApiKey();
+  const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<Chat | null>(null);
+
+  useEffect(() => {
+    // Set initial message based on API key availability
+    const initialMessage = apiKey ? t('ai_chatbot.initial_message') : t('common.api_key_not_configured_link');
+    setMessages([{ role: 'model', text: initialMessage }]);
+  }, [apiKey, t]);
 
   useEffect(() => {
     // Scroll to the bottom of the chat on new messages
@@ -144,8 +150,8 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
     }
   }, [messages]);
 
-  const initializeChat = (apiKey: string) => {
-    const ai = new GoogleGenAI({ apiKey });
+  const initializeChat = (key: string) => {
+    const ai = new GoogleGenAI({ apiKey: key });
     const systemInstruction = `You are an expert inventory management assistant for a retail shop. Analyze the provided JSON data which is a *summary* of the shop's inventory and sales. You will not receive the full raw data. Answer the user's questions based on this summary. Provide clear, concise, and actionable insights. All monetary values are in Indian Rupees (₹). Today's date is ${new Date().toLocaleDateString('en-IN')}. Keep your answers based *only* on the data provided in the prompt.`;
     
     chatRef.current = ai.chats.create({
@@ -160,21 +166,20 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
     e.preventDefault();
     if (!userInput.trim() || isLoading) return;
 
+    if (!apiKey) {
+        const errorMsg = t('common.api_key_not_configured_link');
+        setError(errorMsg);
+        setMessages(prev => [...prev, { role: 'model', text: errorMsg }]);
+        setIsLoading(false);
+        return;
+    }
+
     const newUserMessage: Message = { role: 'user', text: userInput };
     setMessages(prev => [...prev, newUserMessage]);
     const currentInput = userInput;
     setUserInput('');
     setIsLoading(true);
     setError(null);
-
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
-        const errorMsg = t('common.api_key_not_configured');
-        setError(errorMsg);
-        setMessages(prev => [...prev, { role: 'model', text: errorMsg }]);
-        setIsLoading(false);
-        return;
-    }
 
     try {
       if (!chatRef.current) {
@@ -255,9 +260,9 @@ const AiChatbot: React.FC<InventoryHook> = ({ products, sales }) => {
             onChange={(e) => setUserInput(e.target.value)}
             placeholder={t('ai_chatbot.placeholder')}
             className="flex-1 p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition"
-            disabled={isLoading}
+            disabled={isLoading || !apiKey}
           />
-          <Button type="submit" disabled={isLoading || !userInput.trim()}>
+          <Button type="submit" disabled={isLoading || !userInput.trim() || !apiKey}>
             {isLoading ? '...' : 'Send'}
           </Button>
         </form>

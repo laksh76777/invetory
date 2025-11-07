@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
+import { useApiKey } from '../hooks/useApiKey';
 import type { Product, Sale } from '../types';
 import { LightbulbIcon } from './icons/Icons';
-import Button from './ui/Button';
 
 interface ProactiveAiSuggestionsProps {
   products: Product[];
@@ -61,6 +61,7 @@ const aggregateSalesByMonth = (sales: Sale[]) => {
 
 const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ products, sales }) => {
   const { t } = useTranslation();
+  const { apiKey } = useApiKey();
   const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
   const [isLoading, setIsLoading] = useState(true); // Start in loading state
   const [error, setError] = useState<string | null>(null);
@@ -71,9 +72,8 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
         setError(null);
         setSuggestions(null);
 
-        const apiKey = process.env.API_KEY;
         if (!apiKey) {
-            setError(t('common.api_key_not_configured'));
+            setError(t('common.api_key_not_configured_link'));
             setIsLoading(false);
             return;
         }
@@ -151,7 +151,7 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
     } else {
         setIsLoading(false);
     }
-  }, [products, sales, t]); // Rerun if data changes
+  }, [products, sales, t, apiKey]); // Rerun if data or API key changes
 
   const renderContent = () => {
     if (isLoading) {
@@ -168,7 +168,7 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
     if (error) {
       return <p className="text-red-500 text-center py-8">{error}</p>;
     }
-    if (suggestions) {
+    if (suggestions && suggestions.length > 0) {
       return (
         <div className="prose prose-sm dark:prose-invert max-w-none space-y-4">
             {suggestions.map((item, index) => (
@@ -180,7 +180,7 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
         </div>
       );
     }
-    return <p className="text-slate-500 dark:text-slate-400 text-center py-8">{t('proactive_ai_suggestions.description')}</p>;
+    return <p className="text-slate-500 dark:text-slate-400 text-center py-8">{!apiKey ? t('common.api_key_not_configured_link') : t('proactive_ai_suggestions.description')}</p>;
   };
   
   return (
