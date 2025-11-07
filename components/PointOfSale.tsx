@@ -95,7 +95,7 @@ const PointOfSale: React.FC<PointOfSaleProps> = ({
           setBarcodeInput('');
       }
   }
-  
+
   const updateQuantity = (productId: string, newQuantity: number) => {
     const product = products.find(p => p.id === productId);
     if (!product) return;
@@ -204,16 +204,16 @@ const PointOfSale: React.FC<PointOfSaleProps> = ({
           <div className="w-full max-w-lg text-center">
             <h2 className="text-xl md:text-2xl font-bold text-slate-800 dark:text-slate-200 mb-2">{t('pos.scan_or_enter_barcode')}</h2>
             <p className="text-slate-500 dark:text-slate-400 mb-6">{t('pos.main_instruction')}</p>
-            <form onSubmit={handleFormSubmit} className="flex gap-2">
+            <form onSubmit={handleFormSubmit} className="flex w-full gap-2">
               <input
                 type="text"
                 placeholder={t('pos.search_placeholder')}
                 value={barcodeInput}
                 onChange={(e) => { setBarcodeInput(e.target.value); setScanError(''); }}
-                className="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition text-lg font-mono"
+                className="flex-grow p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition text-lg font-mono"
                 autoFocus
               />
-              <Button type="submit" className="!px-4 !py-3" aria-label="Add product">
+              <Button type="submit" className="!px-4 !py-3" aria-label="Add product manually">
                 <PlusCircleIcon className="w-6 h-6" />
               </Button>
             </form>

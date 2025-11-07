@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Type } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
 import type { Product, Sale } from '../types';
 import { SparklesIcon } from './icons/Icons';
@@ -10,9 +10,14 @@ interface AiSuggestionBoxProps {
   sales: Sale[];
 }
 
+interface Advice {
+    title: string;
+    suggestion: string;
+}
+
 const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) => {
   const { t } = useTranslation();
-  const [advice, setAdvice] = useState<string | null>(null);
+  const [advice, setAdvice] = useState<Advice[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,6 +40,24 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
       const oneMonthAgo = new Date();
       oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
       const recentSales = sales.filter(s => new Date(s.date) > oneMonthAgo);
+      
+      const adviceSchema = {
+        type: Type.ARRAY,
+        items: {
+          type: Type.OBJECT,
+          properties: {
+            title: {
+              type: Type.STRING,
+              description: 'A short, bold title for the suggestion (e.g., "Restock Alert").',
+            },
+            suggestion: {
+              type: Type.STRING,
+              description: 'The detailed suggestion text.',
+            },
+          },
+          required: ['title', 'suggestion'],
+        },
+      };
 
       const prompt = `
         Analyze the following inventory data for a small retail shop. Provide 3-4 brief, actionable suggestions to improve sales or manage stock better.
@@ -42,7 +65,7 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
         1. Low stock items that might be popular (check sales data).
         2. Items expiring soon that have high stock levels.
         3. Potentially slow-moving items (high stock, low sales).
-        Format the output as a simple list with a brief title for each point. Keep the language encouraging and straightforward. Today's date is ${new Date().toLocaleDateString('en-IN')}.
+        Today's date is ${new Date().toLocaleDateString('en-IN')}. Return the response in JSON format.
 
         Products Data: ${JSON.stringify(products, null, 2)}
         Recent Sales Data (Last 30 Days): ${JSON.stringify(recentSales, null, 2)}
@@ -50,10 +73,15 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
 
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
-        contents: prompt
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: adviceSchema,
+        },
       });
       
-      setAdvice(response.text);
+      const parsedAdvice: Advice[] = JSON.parse(response.text);
+      setAdvice(parsedAdvice);
 
     } catch (err) {
       console.error(err);
@@ -80,13 +108,13 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
     }
     if (advice) {
       return (
-        <div className="prose prose-sm dark:prose-invert max-w-none">
-          {advice.split('\n').map((line, i) => {
-            line = line.replace(/^\* /, ''); // Remove leading asterisks
-            const isTitle = /^\d+\./.test(line) || line.includes(':');
-            if (isTitle) return <strong key={i} className="block mt-2">{line}</strong>
-            return <p key={i} className="my-1">{line}</p>
-          })}
+        <div className="prose prose-sm dark:prose-invert max-w-none space-y-3">
+            {advice.map((item, index) => (
+                <div key={index}>
+                    <strong className="block">{item.title}</strong>
+                    <p className="my-1">{item.suggestion}</p>
+                </div>
+            ))}
         </div>
       );
     }

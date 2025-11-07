@@ -146,7 +146,7 @@ const ProductFormModal: React.FC<{
       name: product?.name || '',
       category: product?.category || '',
       price: product?.price || 0,
-      stock: product?.stock || 0,
+      stock: product ? Math.max(0, product.stock) : 0,
       lowStockThreshold: product?.lowStockThreshold || 10,
       expiryDate: product?.expiryDate || '',
       barcode: product?.barcode || '',

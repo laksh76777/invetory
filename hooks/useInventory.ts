@@ -403,7 +403,8 @@ const useInventory = (userId: string | null): InventoryHook => {
       items.forEach(saleItem => {
         const productIndex = updatedProducts.findIndex(p => p.id === saleItem.productId);
         if (productIndex !== -1) {
-          updatedProducts[productIndex].stock -= saleItem.quantity;
+          // Clamp stock at 0 to prevent negative inventory.
+          updatedProducts[productIndex].stock = Math.max(0, updatedProducts[productIndex].stock - saleItem.quantity);
         }
       });
       return updatedProducts;
