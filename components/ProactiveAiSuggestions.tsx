@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
-import { useApiKey } from '../hooks/useApiKey';
 import type { Product, Sale } from '../types';
 import { LightbulbIcon } from './icons/Icons';
 
@@ -61,7 +60,6 @@ const aggregateSalesByMonth = (sales: Sale[]) => {
 
 const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ products, sales }) => {
   const { t } = useTranslation();
-  const { apiKey } = useApiKey();
   const [suggestions, setSuggestions] = useState<Suggestion[] | null>(null);
   const [isLoading, setIsLoading] = useState(true); // Start in loading state
   const [error, setError] = useState<string | null>(null);
@@ -72,14 +70,8 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
         setError(null);
         setSuggestions(null);
 
-        if (!apiKey) {
-            setError(t('common.api_key_not_configured_link'));
-            setIsLoading(false);
-            return;
-        }
-
         try {
-            const ai = new GoogleGenAI({ apiKey });
+            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
             const upcomingFestivals = getUpcomingFestivals();
             const aggregatedSales = aggregateSalesByMonth(sales);
             
@@ -146,12 +138,12 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
         }
     };
 
-    if (products.length > 0 && sales.length > 0) {
+    if (products.length > 0 && sales.length > 0 && process.env.API_KEY) {
         generateSuggestions();
     } else {
         setIsLoading(false);
     }
-  }, [products, sales, t, apiKey]); // Rerun if data or API key changes
+  }, [products, sales, t]); // Rerun if data changes
 
   const renderContent = () => {
     if (isLoading) {
@@ -180,7 +172,7 @@ const ProactiveAiSuggestions: React.FC<ProactiveAiSuggestionsProps> = ({ product
         </div>
       );
     }
-    return <p className="text-slate-500 dark:text-slate-400 text-center py-8">{!apiKey ? t('common.api_key_not_configured_link') : t('proactive_ai_suggestions.description')}</p>;
+    return <p className="text-slate-500 dark:text-slate-400 text-center py-8">{t('proactive_ai_suggestions.description')}</p>;
   };
   
   return (

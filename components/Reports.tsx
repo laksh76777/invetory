@@ -3,6 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 import type { InventoryHook } from '../types';
 import { useTranslation } from '../hooks/useTranslation';
 import Card from './ui/Card';
+import { RevenueIcon } from './icons/Icons';
 
 type Period = 'week' | 'month' | 'year';
 
@@ -36,7 +37,7 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
 
             const currentDayOfWeek = now.getDay(); // Sunday - 0, Saturday - 6
             const weekStart = new Date(now);
-            weekStart.setDate(now.getDate() - currentDayOfWeek);
+            weekStart.setDate(now.getDate() - currentDayOfWeek + (currentDayOfWeek === 0 ? -6 : 1)); // Start on Monday
             weekStart.setHours(0, 0, 0, 0);
 
             const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
@@ -138,10 +139,10 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
     const PeriodButton: React.FC<{ period: Period, label: string }> = ({ period, label }) => (
       <button
         onClick={() => setActivePeriod(period)}
-        className={`px-3 py-1.5 text-sm font-medium rounded-md capitalize transition-colors ${
+        className={`px-4 py-2 text-sm font-semibold rounded-lg capitalize transition-all duration-200 ${
           activePeriod === period
-            ? 'bg-primary-100 dark:bg-primary-900/50 text-primary-600 dark:text-white shadow-sm'
-            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+            ? 'bg-white dark:bg-slate-700 text-primary-600 dark:text-white shadow-sm'
+            : 'text-slate-600 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50'
         }`}
       >
         {label}
@@ -150,30 +151,34 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
 
     return (
         <div>
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-8">{t('reports.title')}</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-2">{t('reports.title')}</h1>
+            <p className="text-slate-500 dark:text-slate-400 mb-8">Analyze your sales performance and product trends.</p>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <Card 
                     title={t('reports.todays_revenue')}
                     value={`₹${reportData.todayRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                     description={t('reports.summary_description')}
+                    icon={<RevenueIcon />}
                 />
                  <Card 
                     title={t('reports.this_months_revenue')}
                     value={`₹${reportData.monthRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                     description={t('reports.summary_description')}
+                    icon={<RevenueIcon />}
                 />
                  <Card 
                     title={t('reports.this_years_revenue')}
                     value={`₹${reportData.yearRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                     description={t('reports.summary_description')}
+                    icon={<RevenueIcon />}
                 />
             </div>
             
-            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 mb-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-6 border-b border-slate-200 dark:border-slate-700 gap-4">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg shadow-slate-200/50 dark:shadow-black/20 border border-slate-200/80 dark:border-slate-800 mb-8">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 border-b border-slate-200 dark:border-slate-800 gap-4">
                     <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">{t('reports.sales_over_time')}</h2>
-                    <div className="flex bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+                    <div className="flex bg-slate-100 dark:bg-slate-900/50 rounded-lg p-1 space-x-1 border border-slate-200 dark:border-slate-700">
                         <PeriodButton period="week" label={t('reports.period.this_week')} />
                         <PeriodButton period="month" label={t('reports.period.this_month')} />
                         <PeriodButton period="year" label={t('reports.period.this_year')} />
@@ -187,26 +192,27 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
                             <YAxis tick={{ fill: 'rgb(100 116 139)' }} />
                             <Tooltip
                                 contentStyle={{
-                                    backgroundColor: 'rgb(2 6 23)',
-                                    border: '1px solid rgb(51 65 85)',
-                                    borderRadius: '0.5rem',
-                                    color: 'white'
+                                    backgroundColor: 'rgb(15 23 42)', // slate-900
+                                    border: '1px solid rgb(51 65 85)', // slate-700
+                                    borderRadius: '0.75rem',
+                                    color: 'white',
+                                    boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05)'
                                 }}
                                 labelStyle={{ fontWeight: 'bold' }}
                                 formatter={(value: number) => `₹${value.toFixed(2)}`}
                             />
                             <Legend />
-                            <Line type="monotone" dataKey="revenue" name={t('reports.revenue')} stroke="rgb(var(--color-primary-500))" strokeWidth={2} activeDot={{ r: 8 }} />
+                            <Line type="monotone" dataKey="revenue" name={t('reports.revenue')} stroke="rgb(var(--color-primary-500))" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8, style: { stroke: 'rgba(var(--color-primary-500), 0.3)', strokeWidth: 6 } }} />
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
             </div>
             
-            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg shadow-slate-200/50 dark:shadow-black/20 border border-slate-200/80 dark:border-slate-800 p-6">
                 <h2 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-200">{reportData.topProductsTitle}</h2>
-                 <ul className="space-y-2">
+                 <ul className="space-y-3">
                     {reportData.topSellingProducts.map((product, index) => (
-                        <li key={product.name} className="flex justify-between items-center p-4 rounded-lg bg-slate-50 dark:bg-slate-700/50">
+                        <li key={product.name} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                             <div className="flex items-center">
                                 <span className="text-lg font-bold text-primary-500 mr-4 w-6">#{index + 1}</span>
                                 <div>
@@ -216,12 +222,13 @@ const Reports: React.FC<InventoryHook> = ({ sales }) => {
                                     </p>
                                 </div>
                             </div>
-                            <p className="font-bold text-lg text-slate-800 dark:text-slate-200">{t('reports.units_sold').replace('{quantity}', product.quantity.toString())}</p>
+                            <p className="font-bold text-lg text-slate-800 dark:text-slate-200 mt-2 sm:mt-0">{t('reports.units_sold').replace('{quantity}', product.quantity.toString())}</p>
+
                         </li>
                     ))}
                 </ul>
                  {reportData.topSellingProducts.length === 0 && (
-                    <p className="p-6 text-center text-slate-500 dark:text-slate-400">{t('reports.no_sales_data')}</p>
+                    <p className="p-10 text-center text-slate-500 dark:text-slate-400">{t('reports.no_sales_data')}</p>
                 )}
             </div>
         </div>

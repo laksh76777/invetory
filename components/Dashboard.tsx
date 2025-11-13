@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import type { InventoryHook } from '../types';
 import Card from './ui/Card';
-import { WarningIcon, ExpirationIcon, CheckCircleIcon, ResetIcon } from './icons/Icons';
+// FIX: Corrected icon imports. Added RevenueIcon, LowStockIcon, and fixed ExpiringIcon typo.
+import { WarningIcon, ExpirationIcon, CheckCircleIcon, ResetIcon, ProductsIcon, RevenueIcon, LowStockIcon } from './icons/Icons';
 import { useTranslation } from '../hooks/useTranslation';
 import LanguageSwitcher from './LanguageSwitcher';
 import Button from './ui/Button';
@@ -32,7 +33,7 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
     switch(lang) {
       case 'hi': return 'hi-IN';
       case 'kn': return 'kn-IN';
-      default: return 'en-GB'; // Use GB for day-first format
+      default: return 'en-GB';
     }
   }
 
@@ -45,7 +46,6 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
   const formattedTime = currentDateTime.toLocaleTimeString(getLocaleForLanguage(language), {
     hour: '2-digit',
     minute: '2-digit',
-    second: '2-digit',
     hour12: true,
   });
   
@@ -71,7 +71,6 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
     if (!expiryDate) return Infinity;
     const today = new Date();
     const expiry = new Date(expiryDate);
-    // Set expiry to end of day for consistent "days left" calculation
     expiry.setHours(23, 59, 59, 999);
     return Math.floor((expiry.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
   };
@@ -96,36 +95,37 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
       <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-8">
         <div>
             <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{t('dashboard.title')}</h1>
-            <p className="text-slate-500 mt-1">{t('dashboard.welcome_message')}</p>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">{t('dashboard.welcome_message')}</p>
         </div>
         <div className="flex items-center gap-4 w-full sm:w-auto justify-end">
             <LanguageSwitcher />
-            <div className="text-right flex-shrink-0 bg-white dark:bg-slate-900 rounded-lg px-4 py-2 shadow-sm border border-slate-200 dark:border-slate-700">
+            <div className="text-right flex-shrink-0 bg-white dark:bg-slate-900 rounded-lg px-4 py-2 shadow-sm border border-slate-200 dark:border-slate-800">
                 <p className="font-semibold text-sm text-slate-800 dark:text-slate-200 whitespace-nowrap">{formattedDate}</p>
                 <p className="text-slate-500 dark:text-slate-400 text-xs text-right">{formattedTime}</p>
             </div>
         </div>
       </div>
 
-      {/* Summary Cards */}
       <div className={`grid grid-cols-1 md:grid-cols-2 ${showRevenueCard ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 mb-8`}>
         <Card 
           title={t('dashboard.total_products')}
           value={totalProducts.toString()}
           description={t('dashboard.different_items_in_stock')}
+          icon={<ProductsIcon />}
         />
         {showRevenueCard && (
           <Card 
             title={t('dashboard.total_revenue')}
             value={`₹${totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             description={revenueDescription}
+            icon={<RevenueIcon />}
             action={
               <button 
                 onClick={() => setIsConfirmModalOpen(true)} 
-                className="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white transition"
+                className="p-1.5 rounded-full text-slate-400 hover:bg-slate-200 hover:text-slate-600 dark:hover:bg-slate-700 dark:hover:text-white transition"
                 aria-label={t('dashboard.reset_revenue_button_label')}
               >
-                <ResetIcon className="w-5 h-5" />
+                <ResetIcon className="w-4 h-4" />
               </button>
             }
           />
@@ -135,36 +135,40 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
           value={lowStockProducts.length.toString()}
           description={t('dashboard.items_needing_restock')}
           isWarning={lowStockProducts.length > 0}
+          icon={<LowStockIcon />}
         />
         <Card 
           title={t('dashboard.expiring_soon')}
           value={expiringSoonProducts.length.toString()}
           description={t('dashboard.items_expiring_in_30_days')}
           isWarning={expiringSoonProducts.length > 0}
+          icon={<ExpirationIcon />}
         />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Low Stock Products */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 p-6 border-b border-slate-200 dark:border-slate-700 flex items-center">
-            <WarningIcon className="mr-3 text-red-500" /> {t('dashboard.low_stock_products_title')}
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg shadow-slate-200/50 dark:shadow-black/20 border border-slate-200/80 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 p-5 border-b border-slate-200 dark:border-slate-800 flex items-center">
+            <WarningIcon className="mr-3 text-rose-500" /> {t('dashboard.low_stock_products_title')}
           </h2>
-          <div className="p-6">
+          <div className="p-3">
             {lowStockProducts.length === 0 ? (
-              <div className="text-center py-4">
-                <CheckCircleIcon className="w-12 h-12 text-green-500 mx-auto mb-3" />
+              <div className="text-center py-8">
+                <CheckCircleIcon className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
                 <p className="text-slate-500 dark:text-slate-400">{t('dashboard.all_products_well_stocked')}</p>
               </div>
             ) : (
-              <ul className="space-y-2 max-h-80 overflow-y-auto">
-                {lowStockProducts.map((product, index) => (
-                  <li key={product.id} className={`flex justify-between items-center p-3 rounded-lg ${index % 2 === 0 ? 'bg-slate-50 dark:bg-slate-700/50' : ''}`}>
+              <ul className="space-y-1 max-h-80 overflow-y-auto p-2">
+                {lowStockProducts.map((product) => (
+                  <li key={product.id} className="flex justify-between items-center p-3 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/50 transition-colors">
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">{product.name}</p>
                       <p className="text-sm text-slate-500 dark:text-slate-400">{product.category}</p>
                     </div>
-                    <p className="text-red-500 font-bold text-lg">{Math.max(0, product.stock)}</p>
+                    <div className="text-right">
+                        <p className="text-rose-500 font-bold text-lg">{Math.max(0, product.stock)}</p>
+                        <p className="text-xs text-slate-400">of {product.lowStockThreshold}</p>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -172,39 +176,34 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
           </div>
         </div>
 
-        {/* Expiring Soon Products */}
-        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 p-6 border-b border-slate-200 dark:border-slate-700 flex items-center">
-            <ExpirationIcon className="mr-3 text-yellow-500" /> {t('dashboard.expiring_soon_title')}
+        <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg shadow-slate-200/50 dark:shadow-black/20 border border-slate-200/80 dark:border-slate-800">
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200 p-5 border-b border-slate-200 dark:border-slate-800 flex items-center">
+            <ExpirationIcon className="mr-3 text-amber-500" /> {t('dashboard.expiring_soon_title')}
           </h2>
-          <div className="p-6">
+          <div className="p-3">
             {expiringSoonProducts.length === 0 ? (
-              <div className="text-center py-4">
-                 <CheckCircleIcon className="w-12 h-12 text-green-500 mx-auto mb-3" />
+              <div className="text-center py-8">
+                 <CheckCircleIcon className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
                  <p className="text-slate-500 dark:text-slate-400">{t('dashboard.no_products_expiring_soon')}</p>
               </div>
             ) : (
-                <ul className="space-y-2 max-h-80 overflow-y-auto">
-                {expiringSoonProducts.map((product, index) => {
+                <ul className="space-y-1 max-h-80 overflow-y-auto p-2">
+                {expiringSoonProducts.map((product) => {
                   const daysLeft = getDaysUntilExpiry(product.expiryDate);
-                  const isUrgent = daysLeft === 0;
-
-                  const urgencyText = isUrgent
+                  const isUrgent = daysLeft <= 7;
+                  const urgencyText = daysLeft === 0
                     ? t('dashboard.expires_today')
                     : t('dashboard.days_left').replace('{days}', daysLeft.toString());
 
                   return (
-                    <li key={product.id} className={`flex justify-between items-center p-3 rounded-lg transition-colors ${index % 2 === 0 ? 'bg-slate-50 dark:bg-slate-700/50' : ''} ${isUrgent ? 'bg-red-100/50 dark:bg-red-900/20' : ''}`}>
+                    <li key={product.id} className={`flex justify-between items-center p-3 rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-slate-800/50 ${isUrgent ? 'bg-rose-50 dark:bg-rose-500/10' : ''}`}>
                       <div>
                         <p className="font-semibold text-slate-900 dark:text-white">{product.name}</p>
                         <p className="text-sm text-slate-500 dark:text-slate-400">{new Date(product.expiryDate!).toLocaleDateString('en-IN')}</p>
                       </div>
-                      <div className="flex items-center gap-2">
-                        {isUrgent && <WarningIcon className="w-5 h-5 text-red-500" />}
-                        <p className={`font-semibold ${isUrgent ? 'text-red-600 dark:text-red-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
+                      <p className={`font-semibold text-sm px-2 py-1 rounded-full ${isUrgent ? 'bg-rose-100 text-rose-800 dark:bg-rose-500/20 dark:text-rose-300' : 'bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-300'}`}>
                           {urgencyText}
-                        </p>
-                      </div>
+                      </p>
                     </li>
                   );
                 })}
@@ -214,17 +213,14 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
         </div>
       </div>
 
-      {/* AI Suggestion Boxes */}
       <div className={`mt-8 grid grid-cols-1 ${aiGridCols} gap-8`}>
         {showAiSuggestionBox && <AiSuggestionBox products={products} sales={sales} />}
         <ProactiveAiSuggestions products={products} sales={sales} />
       </div>
 
-      {/* Sales Velocity Alerts */}
       <div className="mt-8">
         <SalesVelocityAlerts products={products} sales={sales} />
       </div>
-
 
       {isConfirmModalOpen && (
           <Modal
@@ -233,10 +229,10 @@ const Dashboard: React.FC<DashboardProps> = ({ products, sales, resetDashboardRe
               title={t('dashboard.reset_revenue_modal.title')}
           >
               <div className="text-center">
-                  <p className="text-slate-700 dark:text-slate-300 mb-6">{t('dashboard.reset_revenue_modal.body')}</p>
+                  <p className="text-slate-600 dark:text-slate-300 mb-6">{t('dashboard.reset_revenue_modal.body')}</p>
                    <div className="flex justify-center gap-4">
                         <Button variant="secondary" onClick={() => setIsConfirmModalOpen(false)}>{t('common.cancel')}</Button>
-                        <Button onClick={handleResetRevenue} className="!bg-red-600 hover:!bg-red-700 focus:!ring-red-500">
+                        <Button onClick={handleResetRevenue} className="!bg-red-600 hover:!bg-red-700 focus-visible:!ring-red-500">
                             {t('dashboard.reset_revenue_modal.confirm_button')}
                         </Button>
                     </div>

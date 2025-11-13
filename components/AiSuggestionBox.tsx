@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { useTranslation } from '../hooks/useTranslation';
-import { useApiKey } from '../hooks/useApiKey';
 import type { Product, Sale } from '../types';
 import { SparklesIcon } from './icons/Icons';
 import Button from './ui/Button';
@@ -18,7 +17,6 @@ interface Advice {
 
 const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) => {
   const { t } = useTranslation();
-  const { apiKey } = useApiKey();
   const [advice, setAdvice] = useState<Advice[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,14 +26,8 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
     setError(null);
     setAdvice(null);
 
-    if (!apiKey) {
-        setError(t('common.api_key_not_configured_link'));
-        setIsLoading(false);
-        return;
-    }
-
     try {
-      const ai = new GoogleGenAI({ apiKey });
+      const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
       // Only include recent sales to keep the prompt concise and relevant
       const oneMonthAgo = new Date();
@@ -121,8 +113,8 @@ const AiSuggestionBox: React.FC<AiSuggestionBoxProps> = ({ products, sales }) =>
     }
     return (
       <div className="text-center py-8">
-        <p className="text-slate-500 dark:text-slate-400 mb-4">{!apiKey ? t('common.api_key_not_configured_link') : t('ai_suggestion_box.description')}</p>
-        <Button onClick={generateAdvice} disabled={!apiKey}>
+        <p className="text-slate-500 dark:text-slate-400 mb-4">{t('ai_suggestion_box.description')}</p>
+        <Button onClick={generateAdvice}>
           <SparklesIcon className="mr-2" />
           {t('ai_suggestion_box.button')}
         </Button>

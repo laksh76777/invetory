@@ -1,5 +1,7 @@
 {
   "name": "Smart Retail & Inventory Management System",
   "description": "A comprehensive web application to streamline retail operations. It features a Point of Sale (POS) system, real-time inventory tracking, proactive alerts for low stock and expiring products, and insightful sales reports to enhance business efficiency and profitability.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [
+    "microphone"
+  ]
 }

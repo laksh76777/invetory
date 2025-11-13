@@ -34,8 +34,11 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{t('products.title')}</h1>
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">{t('products.title')}</h1>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">View, add, and manage your product inventory.</p>
+        </div>
         <Button onClick={openAddModal}>
           <PlusCircleIcon className="mr-2" />
           {t('products.add_button')}
@@ -48,55 +51,59 @@ const Products: React.FC<InventoryHook> = ({ products, addProduct, updateProduct
           placeholder={t('products.search_placeholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full max-w-md p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 focus:ring-2 focus:ring-primary-500 transition"
+          className="w-full max-w-lg p-3 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"
         />
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200 dark:border-slate-700 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg shadow-slate-200/50 dark:shadow-black/20 border border-slate-200/80 dark:border-slate-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left text-slate-500 dark:text-slate-400">
-            <thead className="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-700/50 dark:text-slate-300">
+            <thead className="text-xs text-slate-700 uppercase bg-slate-50 dark:bg-slate-800 dark:text-slate-300">
               <tr>
-                <th className="px-6 py-3 font-semibold">{t('products.table.name')}</th>
-                <th className="px-6 py-3 font-semibold">{t('products.table.category')}</th>
-                <th className="px-6 py-3 font-semibold">{t('products.table.price')}</th>
-                <th className="px-6 py-3 font-semibold">{t('products.table.stock')}</th>
-                <th className="px-6 py-3 font-semibold">{t('products.table.barcode')}</th>
-                <th className="px-6 py-3 font-semibold">{t('products.table.expiry')}</th>
-                <th className="px-6 py-3 font-semibold">{t('products.table.actions')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">{t('products.table.name')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">{t('products.table.category')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">{t('products.table.price')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">{t('products.table.stock')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">{t('products.table.barcode')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider">{t('products.table.expiry')}</th>
+                <th className="px-6 py-4 font-semibold tracking-wider text-right">{t('products.table.actions')}</th>
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map(product => (
-                <tr key={product.id} className="border-b border-slate-200 dark:border-slate-700 last:border-b-0 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+              {filteredProducts.map((product, index) => (
+                <tr key={product.id} className={`transition-colors border-b border-slate-200/80 dark:border-slate-800 ${index % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/50 dark:bg-slate-900/50'} hover:bg-slate-100 dark:hover:bg-slate-800`}>
                   <td className="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">
-                    <div className="flex items-center gap-2">
-                      {product.name}
+                    <div className="flex items-center gap-3">
                       {product.stock <= product.lowStockThreshold && (
                         <span 
-                          className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"
+                          className="w-2.5 h-2.5 bg-rose-500 rounded-full flex-shrink-0"
                           title={t('dashboard.low_stock_alerts')}
                         ></span>
                       )}
+                      <span>{product.name}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">{product.category}</td>
                   <td className="px-6 py-4">₹{product.price.toFixed(2)}</td>
-                  <td className={`px-6 py-4 font-bold ${product.stock <= product.lowStockThreshold ? 'text-red-500' : 'text-slate-700 dark:text-slate-200'}`}>
+                  <td className={`px-6 py-4 font-bold ${product.stock <= product.lowStockThreshold ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200'}`}>
                     {Math.max(0, product.stock)}
                   </td>
                   <td className="px-6 py-4 font-mono text-slate-600 dark:text-slate-400">{product.barcode}</td>
                   <td className="px-6 py-4">{new Date(product.expiryDate).toLocaleDateString('en-IN')}</td>
-                  <td className="px-6 py-4 flex items-center gap-4">
-                    <button onClick={() => openEditModal(product)} className="font-medium text-primary-600 dark:text-primary-500 hover:underline">{t('products.edit_button')}</button>
-                    <button onClick={() => deleteProduct(product.id)} className="text-slate-500 hover:text-red-500 transition"><TrashIcon className="w-5 h-5"/></button>
+                  <td className="px-6 py-4 flex items-center justify-end gap-2">
+                    <button onClick={() => openEditModal(product)} className="font-medium text-primary-600 dark:text-primary-400 hover:underline">
+                      {t('products.edit_button')}
+                    </button>
+                    <button onClick={() => deleteProduct(product.id)} className="text-slate-500 hover:text-rose-500 transition p-1.5 rounded-full hover:bg-rose-100 dark:hover:bg-rose-500/10">
+                        <TrashIcon className="w-4 h-4"/>
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
           {filteredProducts.length === 0 && (
-            <p className="p-6 text-center text-slate-500 dark:text-slate-400">{t('products.no_products_found')}</p>
+            <p className="p-10 text-center text-slate-500 dark:text-slate-400">{t('products.no_products_found')}</p>
           )}
         </div>
       </div>
@@ -138,7 +145,7 @@ const ProductFormModal: React.FC<{
   const categories = [
     'Grocery', 'Dairy', 'Bakery', 'Beverages', 'Snacks', 
     'Produce', 'Pantry', 'Grains', 'Electronics', 'Clothes', 
-    'Stationery', 'Household'
+    'Stationery', 'Household', 'Personal Care', 'Spices'
   ];
 
   useEffect(() => {
@@ -215,14 +222,14 @@ const ProductFormModal: React.FC<{
     }
   };
   
-  const formInputStyle = "mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 transition";
+  const formInputStyle = "mt-1 w-full p-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 transition focus:border-primary-500 focus:ring-2 focus:ring-primary-500/50";
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={product ? t('products.modal.edit_title') : t('products.modal.add_title')}>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="name" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('products.form.name')}</label>
-          <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} required />
+          <input type="text" name="name" id="name" value={formData.name} onChange={handleChange} className={formInputStyle} required />
         </div>
         
         <div>
@@ -237,7 +244,7 @@ const ProductFormModal: React.FC<{
                     id="barcode" 
                     value={formData.barcode} 
                     onChange={handleChange} 
-                    className={`${formInputStyle} pl-10 focus:ring-2 ${barcodeError ? 'border-red-500 focus:ring-red-500' : 'focus:ring-primary-500'}`} 
+                    className={`${formInputStyle} pl-10 ${barcodeError ? 'border-red-500 focus:ring-red-500/50' : ''}`} 
                     required 
                 />
             </div>
@@ -246,10 +253,10 @@ const ProductFormModal: React.FC<{
 
         <div>
           <label htmlFor="category" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('products.form.category')}</label>
-          <select name="category" id="category" value={formData.category} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} required>
+          <select name="category" id="category" value={formData.category} onChange={handleChange} className={formInputStyle} required>
             <option value="" disabled>{t('products.categories.select')}</option>
-            {categories.map(cat => (
-                <option key={cat} value={cat}>{t(`products.categories.${cat.toLowerCase()}`)}</option>
+            {categories.sort().map(cat => (
+                <option key={cat} value={cat}>{t(`products.categories.${cat.toLowerCase().replace(' ', '_')}`)}</option>
             ))}
           </select>
         </div>
@@ -257,22 +264,22 @@ const ProductFormModal: React.FC<{
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="price" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('products.form.price')}</label>
-            <input type="number" name="price" id="price" value={formData.price} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} min="0" step="0.01" required />
+            <input type="number" name="price" id="price" value={formData.price} onChange={handleChange} className={formInputStyle} min="0" step="0.01" required />
           </div>
           <div>
             <label htmlFor="stock" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('products.form.stock')}</label>
-            <input type="number" name="stock" id="stock" value={formData.stock} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} min="0" required />
+            <input type="number" name="stock" id="stock" value={formData.stock} onChange={handleChange} className={formInputStyle} min="0" required />
           </div>
         </div>
         
         <div className="grid grid-cols-2 gap-4">
           <div>
               <label htmlFor="lowStockThreshold" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('products.form.low_stock_threshold')}</label>
-              <input type="number" name="lowStockThreshold" id="lowStockThreshold" value={formData.lowStockThreshold} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} min="0" required />
+              <input type="number" name="lowStockThreshold" id="lowStockThreshold" value={formData.lowStockThreshold} onChange={handleChange} className={formInputStyle} min="0" required />
           </div>
           <div>
             <label htmlFor="expiryDate" className="block text-sm font-medium text-slate-700 dark:text-slate-300">{t('products.form.expiry')}</label>
-            <input type="date" name="expiryDate" id="expiryDate" value={formData.expiryDate} onChange={handleChange} className={`${formInputStyle} focus:ring-2 focus:ring-primary-500`} required />
+            <input type="date" name="expiryDate" id="expiryDate" value={formData.expiryDate} onChange={handleChange} className={formInputStyle} required />
           </div>
         </div>
         

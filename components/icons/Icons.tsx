@@ -17,6 +17,22 @@ export const ProductsIcon: React.FC<{ className?: string }> = ({ className }) =>
   </svg>
 );
 
+export const RevenueIcon: React.FC<{ className?: string }> = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M15 8.5a4 4 0 1 0-4.74-4.74"/>
+        <path d="M5 10h14"/>
+        <path d="M5 15h14"/>
+    </svg>
+);
+
+export const LowStockIcon: React.FC<{ className?: string }> = ({ className }) => (
+    <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <path d="m3.27 6.96 8.73 5.04 8.73-5.04"/>
+        <path d="M12 22.08V12"/>
+    </svg>
+);
+
 export const PosIcon: React.FC<{ className?: string }> = ({ className }) => (
     <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
@@ -175,4 +191,20 @@ export const ShopIcon: React.FC<{ className?: string }> = ({ className }) => (
         <path d="M3 9.5l9-7 9 7V21a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
         <polyline points="9 21 9 12 15 12 15 21"></polyline>
     </svg>
+);
+
+export const MicIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+    <line x1="12" y1="19" x2="12" y2="23"></line>
+    <line x1="8" y1="23" x2="16" y2="23"></line>
+  </svg>
+);
+
+export const StopCircleIcon: React.FC<{ className?: string }> = ({ className }) => (
+  <svg className={className} width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"></circle>
+    <rect x="9" y="9" width="6" height="6"></rect>
+  </svg>
 );
